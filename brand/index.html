@@ -1,0 +1,140 @@
+<title>Deepdive Brand Kit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&display=swap" rel="stylesheet">
+<style>
+/* Brand kit for Deepdive and Deepdive Casino. One long reference sheet: each brand gets its logos on dark and light grounds,
+   then the shared palette, type and rules. Dark only on purpose: both brands live on deep water. */
+:root{color-scheme:dark;--ink:#020814;--panel:#081428;--panel2:#0e1f3a;--edge:#6ff7e124;--foam:#e8f6fa;--mut:#8ba3b8;--soft:#c5d6e2;
+ --aqua:#6ff7e1;--violet:#a98bff;--krill:#ff8ad8;--gold:#ffd27a;--paper:#f4f6f8;
+ --body:Manrope,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:var(--foam);font:16px/1.55 var(--body);-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:20px;padding-block:40px 64px;display:flex;flex-direction:column;gap:56px}
+header{display:flex;flex-direction:column;gap:10px}
+.eyebrow{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--violet)}
+h1{margin:0;font-size:clamp(34px,6vw,56px);line-height:1;letter-spacing:-.035em;font-weight:800;text-wrap:balance}
+h1 span{color:var(--aqua)}
+h2{margin:0;font-size:28px;letter-spacing:-.025em;font-weight:800;text-wrap:balance}
+h3{margin:0;font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
+p{margin:0;color:var(--soft);max-width:68ch}
+section{display:flex;flex-direction:column;gap:18px}
+.lead{font-size:18px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.tile{display:flex;flex-direction:column;gap:10px;min-width:0}
+.stage{display:grid;place-items:center;min-height:180px;padding:28px;border-radius:18px;border:1px solid var(--edge);background:radial-gradient(ellipse 90% 80% at 50% 20%,#0d3456,#061427 60%,var(--ink))}
+.stage.light{background:var(--paper);border-color:#00000014}
+.stage.felt{background:radial-gradient(ellipse at 50% 40%,#14705f,#0d4f45 50%,#05261f)}
+.stage img{display:block;max-width:100%;height:auto;max-height:150px}
+.stage.big{min-height:260px}.stage.big img{max-height:200px}
+.cap{display:flex;justify-content:space-between;gap:10px;font-size:13px;color:var(--mut)}
+.cap code{font:600 12px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--soft);overflow-wrap:anywhere}
+.brand-head{display:flex;align-items:center;gap:16px;padding-bottom:14px;border-bottom:1px solid #ffffff14}
+.brand-head img{width:56px;height:56px}
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.sw{display:flex;flex-direction:column;border-radius:14px;overflow:hidden;border:1px solid #ffffff14;background:var(--panel)}
+.sw i{display:block;height:74px;background:var(--c)}
+.sw div{padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+.sw b{font-size:14px}.sw span{font:600 12px ui-monospace,Menlo,monospace;color:var(--mut)}.sw small{font-size:12px;color:var(--mut)}
+.sw button{all:unset;cursor:pointer}
+.sw button:focus-visible{outline:2px solid var(--aqua);outline-offset:2px}
+.type{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:14px}
+.spec{padding:22px;border-radius:18px;border:1px solid var(--edge);background:var(--panel);display:flex;flex-direction:column;gap:10px;min-width:0}
+.spec .s1{font-size:56px;font-weight:800;letter-spacing:-.035em;line-height:1}
+.spec .s2{font-size:22px;font-weight:800;letter-spacing:.42em;color:var(--gold)}
+.spec .s3{font-size:17px;font-weight:600;color:var(--soft)}
+.rules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.rule{padding:18px 20px;border-radius:16px;border:1px solid var(--edge);background:var(--panel);display:flex;flex-direction:column;gap:8px}
+.rule.no{border-color:#ff7a8a40}
+.rule b{font-size:15px}.rule.no b{color:#ffb3bc}.rule.yes b{color:var(--aqua)}
+ul{margin:0;padding-left:18px;color:var(--soft);display:flex;flex-direction:column;gap:4px}
+.files{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px 18px;font:600 13px ui-monospace,Menlo,monospace;color:var(--soft)}
+.files span{color:var(--mut);font-family:var(--body);font-weight:500}
+#toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);padding:10px 16px;border-radius:12px;background:var(--panel2);border:1px solid var(--edge);font-weight:700;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none}
+#toast.on{opacity:1}
+@media(max-width:760px){.g3,.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.g2,.type,.rules{grid-template-columns:1fr}}
+@media(max-width:420px){.g3,.g4{grid-template-columns:1fr}}
+</style>
+
+<div class="wrap">
+ <header>
+  <span class="eyebrow">Ardan Studio · Brand kit</span>
+  <h1>Deepdive <span>and</span> Deepdive Casino</h1>
+  <p class="lead">Two products, one family. Both are lit like the deep sea: near-black water where the only light comes from living things. Deepdive's mark is the glowing jellyfish. The casino sets that same jellyfish inside a casino chip.</p>
+ </header>
+
+ <section aria-labelledby="dd">
+  <div class="brand-head"><img src="deepdive/mark.svg" alt=""><div><h2 id="dd">Deepdive</h2><p>The daily word game. The rarer your answer, the deeper you sink.</p></div></div>
+  <div class="grid g2">
+   <div class="tile"><div class="stage big"><img src="deepdive/logo-horizontal-dark.svg" alt="Deepdive logo on dark"></div><div class="cap"><span>Primary, on dark</span><code>logo-horizontal-dark.svg</code></div></div>
+   <div class="tile"><div class="stage big light"><img src="deepdive/logo-horizontal-light.svg" alt="Deepdive logo on light"></div><div class="cap"><span>On light</span><code>logo-horizontal-light.svg</code></div></div>
+  </div>
+  <div class="grid g4">
+   <div class="tile"><div class="stage"><img src="deepdive/logo-stacked.svg" alt="Deepdive stacked logo"></div><div class="cap"><span>Stacked</span><code>logo-stacked.svg</code></div></div>
+   <div class="tile"><div class="stage"><img src="deepdive/mark.svg" alt="Deepdive jellyfish mark"></div><div class="cap"><span>Mark</span><code>mark.svg</code></div></div>
+   <div class="tile"><div class="stage felt"><img src="deepdive/mark-white.svg" alt="Deepdive mark in white"></div><div class="cap"><span>One colour</span><code>mark-white.svg</code></div></div>
+   <div class="tile"><div class="stage"><img src="deepdive/icon-512.png" alt="Deepdive app icon" style="border-radius:22%;max-height:130px"></div><div class="cap"><span>App icon</span><code>icon-512.png</code></div></div>
+  </div>
+  <div class="tile"><div class="stage" style="padding:0;overflow:hidden"><img src="deepdive/og-image.png" alt="Deepdive link preview image" style="max-height:none;width:100%"></div><div class="cap"><span>Link preview, 1200 × 630</span><code>og-image.png</code></div></div>
+ </section>
+
+ <section aria-labelledby="dc">
+  <div class="brand-head"><img src="casino/mark.svg" alt=""><div><h2 id="dc">Deepdive Casino</h2><p>Blackjack and Texas Hold'em, solo or live with friends. Play money only.</p></div></div>
+  <div class="grid g2">
+   <div class="tile"><div class="stage big"><img src="casino/logo-horizontal-dark.svg" alt="Deepdive Casino logo on dark"></div><div class="cap"><span>Primary, on dark</span><code>logo-horizontal-dark.svg</code></div></div>
+   <div class="tile"><div class="stage big light"><img src="casino/logo-horizontal-light.svg" alt="Deepdive Casino logo on light"></div><div class="cap"><span>On light</span><code>logo-horizontal-light.svg</code></div></div>
+  </div>
+  <div class="grid g4">
+   <div class="tile"><div class="stage"><img src="casino/logo-stacked.svg" alt="Deepdive Casino stacked logo"></div><div class="cap"><span>Stacked</span><code>logo-stacked.svg</code></div></div>
+   <div class="tile"><div class="stage felt"><img src="casino/mark.svg" alt="Casino chip mark"></div><div class="cap"><span>Chip mark, on felt</span><code>mark.svg</code></div></div>
+   <div class="tile"><div class="stage"><img src="casino/mark-white.svg" alt="Casino chip mark in white"></div><div class="cap"><span>One colour</span><code>mark-white.svg</code></div></div>
+   <div class="tile"><div class="stage"><img src="casino/icon-512.png" alt="Deepdive Casino app icon" style="border-radius:22%;max-height:130px"></div><div class="cap"><span>App icon</span><code>icon-512.png</code></div></div>
+  </div>
+  <div class="tile"><div class="stage" style="padding:0;overflow:hidden"><img src="casino/og-image.png" alt="Deepdive Casino link preview image" style="max-height:none;width:100%"></div><div class="cap"><span>Link preview, 1200 × 630</span><code>og-image.png</code></div></div>
+ </section>
+
+ <section aria-labelledby="col">
+  <h2 id="col">Colour</h2>
+  <p>Dark grounds, with colour used like bioluminescence: sparingly and glowing. Aqua leads for Deepdive. Gold and felt green are the casino's additions. Click a swatch to copy its hex.</p>
+  <div class="swatches" id="sw"></div>
+ </section>
+
+ <section aria-labelledby="ty">
+  <h2 id="ty">Type</h2>
+  <div class="type">
+   <div class="spec"><h3>Wordmark and headings</h3><span class="s1">Deepdive</span><p>Manrope ExtraBold (800), tracking −3.5%. In the logos the letters are outlines, so they look the same everywhere.</p></div>
+   <div class="spec"><h3>Casino sub-mark</h3><span class="s2">CASINO</span><p>Manrope ExtraBold, all caps, tracking +42%, in gold. It reads like the lettering on a casino sign.</p></div>
+   <div class="spec" style="grid-column:1/-1"><h3>Body</h3><span class="s3">Seven prompts. The rarer your answer, the deeper you sink.</span><p>Manrope Regular to SemiBold (400–600), 16px and up on screens, line height 1.5.</p></div>
+  </div>
+ </section>
+
+ <section aria-labelledby="us">
+  <h2 id="us">Using the logos</h2>
+  <div class="rules">
+   <div class="rule yes"><b>Do</b><ul><li>Leave clear space around the logo at least as wide as the jellyfish's bell.</li><li>Use the dark version on deep navy or black, and the light version on white or pale grey.</li><li>Use the one-colour white mark on photos, felt or busy backgrounds.</li><li>Keep the mark at least 24px tall on screens. Below that, use the favicon.</li></ul></div>
+   <div class="rule no"><b>Don't</b><ul><li>Recolour the jellyfish or swap the gold for another colour.</li><li>Stretch, rotate, outline or add drop shadows to the logo.</li><li>Rebuild the wordmark in another font.</li><li>Put the casino chip in the Deepdive logo, or the bare jellyfish in the casino's.</li></ul></div>
+  </div>
+ </section>
+
+ <section aria-labelledby="fi">
+  <h2 id="fi">Files</h2>
+  <p>Everything is in the <b>brand</b> folder of the deepdive-casino repository, one folder per brand. SVGs scale to any size; PNGs are ready for app stores and link previews.</p>
+  <div class="files">
+   <div>logo-horizontal-dark.svg <span>· main logo</span></div><div>logo-horizontal-light.svg <span>· on white</span></div><div>logo-horizontal-white.svg <span>· one colour</span></div>
+   <div>logo-stacked.svg <span>· square spaces</span></div><div>mark.svg · mark-white.svg · mark-black.svg</div><div>favicon.svg · favicon-32.png <span>· browser tab</span></div>
+   <div>icon-192.png · icon-512.png <span>· app</span></div><div>icon-maskable-512.png <span>· Android</span></div><div>apple-touch-icon.png <span>· iPhone</span></div>
+   <div>og-image.png <span>· link previews</span></div>
+  </div>
+ </section>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+<script>
+const COLORS=[['Abyss','#020814','Page background'],['Deep','#081428','Panels'],['Aqua','#6ff7e1','Primary glow, Deepdive'],['Violet','#a98bff','Oral arms, accents'],
+ ['Krill','#ff8ad8','Hearts, diamonds, neon'],['Coral','#ff7a8a','Losses, warnings'],['Pearl','#f4eefc','The currency'],['Gold','#ffd27a','Casino lettering, chips'],
+ ['Felt','#0d4f45','Casino tables'],['Brass','#d9a85b','Rail trim'],['Foam','#e8f6fa','Text on dark'],['Mist','#8ba3b8','Secondary text']];
+const sw=document.getElementById('sw'),toast=document.getElementById('toast');let tT=0;
+sw.innerHTML=COLORS.map(([n,h,r])=>`<div class="sw"><button data-hex="${h}" aria-label="Copy ${n} ${h}"><i style="--c:${h}"></i></button><div><b>${n}</b><span>${h}</span><small>${r}</small></div></div>`).join('');
+sw.addEventListener('click',e=>{const b=e.target.closest('[data-hex]');if(!b)return;const h=b.dataset.hex;
+ const show=m=>{toast.textContent=m;toast.classList.add('on');clearTimeout(tT);tT=setTimeout(()=>toast.classList.remove('on'),1800)};
+ try{navigator.clipboard.writeText(h).then(()=>show('Copied '+h),()=>show(h))}catch(x){show(h)}});
+</script>

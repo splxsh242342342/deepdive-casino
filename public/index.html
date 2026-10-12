@@ -65,7 +65,7 @@ a{text-decoration:none}
 main{position:relative;z-index:1;max-width:620px;margin:0 auto;padding-inline:16px;padding-block:12px 24px;display:flex;flex-direction:column;gap:14px}
 .top{display:flex;align-items:center;gap:8px;min-height:48px}
 .brand{display:flex;align-items:center;gap:8px;margin-right:auto;min-width:0}
-.brand .mk{width:22px;height:33px;flex:none}
+.brand .mk{width:32px;height:32px;flex:none;display:block}
 .brand b{font-weight:800;font-size:18px;letter-spacing:-.02em;white-space:nowrap}
 .brand b span{color:var(--aqua)}
 .ttl:focus{outline:none}
@@ -437,7 +437,7 @@ footer{position:relative;z-index:1;text-align:center;color:var(--mut);font-size:
 <main>
  <header class="top">
   <button class="icon" id="back" aria-label="Main menu" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
-  <div class="brand" id="brand"><span class="mk" id="mk" aria-hidden="true"></span><b><span class="w1" style="color:var(--foam)">Deepdive </span><span>Casino</span></b></div>
+  <div class="brand" id="brand"><img class="mk" src="mark.svg" alt="" width="32" height="32"><b><span class="w1" style="color:var(--foam)">Deepdive </span><span>Casino</span></b></div>
   <h1 class="ttl" id="ttl" tabindex="-1" hidden></h1>
   <button class="bal" id="bal" aria-label="Your pearls. Get more pearls"><i class="pearl" aria-hidden="true"></i><span id="balv">1,000</span><span class="plus" aria-hidden="true">+</span></button>
   <button class="icon" id="helpBtn" aria-label="How to play"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.3a2.6 2.6 0 0 1 5 .9c0 1.8-2.5 2.3-2.5 3.8M12 17.2v.1"/></svg></button>
@@ -532,7 +532,7 @@ const JF=(()=>{
  const arms=[[45,0],[55,1]].map(([x,k])=>`<g class="t arm" style="animation-delay:-${k*1.1+.4}s"><path d="M${x} 50C${x+9} 68 ${x-9} 84 ${x+4} 102S${x-7} 120 ${x+2} 132"/></g>`).join('');
  const dots=[[28,40],[38,30],[50,26],[62,30],[72,40]].map(([x,y],i)=>`<circle class="s" cx="${x}" cy="${y}" r="1.7" style="animation-delay:-${i*.45}s"/>`).join('');
  return `<svg class="jf" viewBox="0 0 100 150" aria-hidden="true"><g class="bob">${tent}${arms}<g class="bell"><path class="bo" d="M12 52C12 14 88 14 88 52Q80 46 71 52Q62 46 50 52Q38 46 29 52Q20 46 12 52Z"/><path class="bi" d="M25 48C25 25 75 25 75 48"/><path class="go" d="M38 41c-6-10 6-15 8-4M62 41c6-10-6-15-8-4M44 33c0-8 12-8 12 0"/>${dots}</g></g></svg>`})();
-$('mk').innerHTML=JF;$('spJf').innerHTML=JF;$('heroJf').innerHTML=JF;
+$('spJf').innerHTML=JF;$('heroJf').innerHTML=JF;
 
 /* ---------- sound: synthesised, no files ---------- */
 const SND=(()=>{let ctx=null,out=null,on=LS.get('ddc_snd2',true),mus=LS.get('ddc_mus',true),vol=LS.get('ddc_musv',.35),musG=null,musT=0,step=0;

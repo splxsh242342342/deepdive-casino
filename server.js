@@ -15,7 +15,10 @@ const E = new Function(fs.readFileSync(path.join(PUB, 'engine.js'), 'utf8') +
   '\nreturn {pkNew,pkSeat,pkStart,pkAct,pkNext,pkEligible,botMove,bjNew,bjSeat,bjDeal,bjTick,bjAct,bjInsTimeout,bjNewRound,BOTS,BB,BUY,PK_MIN,PK_MAX,BJ_BET,rid};')();
 
 /* public/index.html is written as page content (it also publishes as a Claude artifact), so the server adds the document shell. */
+const SITE = process.env.SITE_URL || 'https://casino.ardanstudio.ie';
 const SHELL = '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#020814">' +
+  '<link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="manifest" href="/manifest.webmanifest">' +
+  `<meta property="og:type" content="website"><meta property="og:site_name" content="Deepdive Casino"><meta property="og:title" content="Deepdive Casino"><meta property="og:description" content="Blackjack and Texas Hold'em in the deep. Play friends live, no sign-up."><meta property="og:url" content="${SITE}/"><meta property="og:image" content="${SITE}/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image">` +
   '<style>:root{padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}</style></head><body>';
 let page = '';
 const loadPage = () => (page = SHELL + fs.readFileSync(path.join(PUB, 'index.html'), 'utf8') + '</body></html>');
