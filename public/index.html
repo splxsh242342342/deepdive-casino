@@ -358,7 +358,7 @@ footer{position:relative;z-index:1;text-align:center;color:var(--mut);font-size:
 
 /* ---------- laptops and desktops: a casino floor, not a phone column ---------- */
 @media(min-width:900px){
- :root{--cw:clamp(62px,5.4vw,84px)}
+ :root{--cw:clamp(50px,8vh,84px)}
  main{max-width:1180px;padding-inline:28px;gap:18px}
  .top{min-height:56px}.brand b{font-size:20px}.ttl{font-size:20px}
  .screen{gap:16px}
@@ -407,6 +407,30 @@ footer{position:relative;z-index:1;text-align:center;color:var(--mut);font-size:
  .panel{max-width:720px;width:100%;margin:0 auto}
  .tbar{max-width:1060px;width:100%;margin:0 auto}
  dialog{width:min(520px,calc(100vw - 48px))}
+ /* the whole game fits the window: table fills the space between the top bar and the controls */
+ body[data-scr=bj] footer,body[data-scr=pk] footer,body[data-scr=live] footer{display:none}
+ #scr-bj,#scr-pk{height:calc(100dvh - 112px);min-height:480px}
+ #scr-bj>.learn,#scr-pk>.learn{display:none}
+ #scr-live #tableWrap{height:calc(100dvh - 112px);min-height:480px;display:flex;flex-direction:column;gap:10px}
+ #bjGame,#pkGame,#liveGame{flex:1;min-height:0;display:flex;flex-direction:column;gap:10px}
+ #bjGame>.rail,#pkGame>.rail,#liveGame>.rail{flex:1;min-height:0;display:flex}
+ .rail>.table{flex:1;min-height:0}
+ .pkt{height:auto}
+ .bjt{min-height:0;justify-content:space-between;gap:8px;padding:20px 44px 38px}
+ .bjt .rule{display:none}.bjt .arc{max-width:460px;margin:-6px auto -12px}
+ .bjt .hands,.bjt .stake{min-height:calc(var(--cw)*1.4 + 34px)}
+ .neon{margin:0}
+ .tray{position:static;flex:none}
+ .tray:has(.panel2){display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:center;gap:12px}
+ .tray:has(.panel2)>.panel2{grid-row:span 2}
+}
+@media(min-width:900px) and (max-height:820px){
+ .neon{display:none}
+ :root{--cw:clamp(44px,7.4vh,70px)}
+ .chip{width:52px;height:52px;font-size:14px}
+ .tray{padding:10px 14px;gap:8px}.btn{min-height:46px;padding:9px 12px}
+ .bjt .arc{max-width:380px}.bjt{padding:16px 40px 30px}
+ .card.sm{--cw:40px}.minis{min-height:56px}.pkt .seat{padding:8px 8px 6px}.pkt .rule{display:none}
 }
 
 /* lighter effects for low-end devices (Settings > Effects) */
@@ -1124,7 +1148,7 @@ const ROUTE={'':'menu',blackjack:'bj',holdem:'pk',live:'live'},HASH={menu:'',bj:
 let curScreen='',fromMenu=false;
 function go(s){const h=HASH[s]??'';if(location.hash.slice(1)===h)return showScreen(s);location.hash=h}
 function showScreen(s){
- const prev=curScreen;if(s===prev)return;curScreen=s;fromMenu=prev==='menu';
+ const prev=curScreen;if(s===prev)return;curScreen=s;fromMenu=prev==='menu';document.body.dataset.scr=s;
  $('menu').hidden=s!=='menu';for(const k of ['bj','pk','live'])$('scr-'+k).hidden=s!==k;
  $('back').hidden=s==='menu';$('brand').hidden=s!=='menu';$('setBtn').hidden=s!=='menu';$('ttl').hidden=s==='menu';$('ttl').textContent=TITLE[s]||'';
  document.title=s==='menu'?'Deepdive Casino':(s==='pk'?"Texas Hold'em":TITLE[s])+' · Deepdive Casino';
