@@ -14,7 +14,7 @@ function cards(str,pre){const o=[];str=String(str||'');for(let i=0;i+1<str.lengt
 
 /* ---------- table rules ---------- */
 const SB=10,BB=20,BUY=1000,PK_MIN=400,PK_MAX=2000,RAKE=.05,RAKE_CAP=60,PK_TURN=25000;
-const DECKS=6,CUT=.25,BJ_MIN=10,BJ_MAX=1000,BJ_TURN=20000,BJ_BET=15000,BJ_INS=10000;
+const DECKS=6,CUT=.25,BJ_MIN=10,BJ_MAX=1000,BJ_TURN=20000,BJ_BET=10000,BJ_INS=10000,PK_GAP=3000,BJ_GAP=2500;
 const BOTS=[{n:'Octavia',ag:.3},{n:'Mako',ag:.65},{n:'Lumen',ag:.48},{n:'Pip',ag:.4},{n:'Barnacle',ag:.55}];
 
 /* poker hand evaluation: best 5 of up to 7 cards -> [category, tiebreakers...] */
@@ -129,7 +129,7 @@ function pkShow(S){
  S.pot=pot;S.rk=rakeOf(S,pot);S.wn=[];
  for(const k of ks){const i=+k,p=S.seats[i];p.s+=won[k];p.w=won[k];if(real.has(i))S.wn.push({i,a:won[k]})}
  pkEnd(S)}
-function pkEnd(S){S.ph='end';S.to=-1;S.dl=0;S.at=S.live?Date.now()+6500:0}
+function pkEnd(S){S.ph='end';S.to=-1;S.dl=0;S.at=S.live?Date.now()+PK_GAP:0}
 function botMove(S,i,it){
  it=it||240;const p=S.seats[i],b=BOTS[p.bot]||BOTS[0],opp=S.seats.filter(q=>q&&q!==p&&inHand(q)).length;
  const bd=cards(S.bd,'x'),e=equity(cards(p.hc,'x'),bd,Math.max(1,opp),bd.length?it:Math.round(it*.75));
@@ -213,6 +213,6 @@ function bjSettle(S){
    h.r=r;h.net=Math.floor(b)-h.b;back+=Math.floor(b)}
   if(p.ins>0&&dBJ)back+=p.ins*3;
   p.w=back;p.s=p.s-p.t+p.w}
- S.ph='end';S.to=-1;S.dl=0;S.at=S.live?Date.now()+5500:0}
+ S.ph='end';S.to=-1;S.dl=0;S.at=S.live?Date.now()+BJ_GAP:0}
 function bjNewRound(S){S.h=rid();S.ph='bet';S.dc='';S.hide=1;S.to=-1;S.dl=0;S.at=0;S.q=[];S.shuf=0;
  for(const p of S.seats)if(p){p.hs=[];p.t=0;p.w=0;p.in=0;p.rd=0;p.ins=-1}}

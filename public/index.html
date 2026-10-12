@@ -190,6 +190,7 @@ main{position:relative;z-index:1;max-width:620px;margin:0 auto;padding-inline:16
 .ph .meta{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--mut);font-weight:700;flex-wrap:wrap;justify-content:center}
 .stake{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:calc(var(--cw)*1.4 + 40px);color:var(--mut);font-size:15px;text-align:center}
 .chipv{display:grid;place-items:center;width:64px;height:64px;border-radius:50%;font-weight:800;font-variant-numeric:tabular-nums;color:var(--foam);background:radial-gradient(circle,#0b1a33 52%,transparent 53%),conic-gradient(var(--aqua) 0 12.5%,#0b1a33 0 25%,var(--aqua) 0 37.5%,#0b1a33 0 50%,var(--aqua) 0 62.5%,#0b1a33 0 75%,var(--aqua) 0 87.5%,#0b1a33 0);box-shadow:0 0 24px -4px #6ff7e180}
+.spots{display:flex;flex-direction:column;gap:12px}
 .ohand{display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px;border-radius:10px}
 .ohand.on{background:#6ff7e114}
 
@@ -402,7 +403,14 @@ footer{position:relative;z-index:1;text-align:center;color:var(--mut);font-size:
  .bjt:before{border-radius:20px 20px 50% 50%/20px 20px 34% 34%}
  .bjt .shoe{right:36px;top:26px;width:50px;height:66px}.bjt .rack{left:36px;top:26px}.bjt .rack i{width:10px;height:46px}
  .bjt .arc{max-width:560px}.arc text{font-size:15px}
- .bjt .others{grid-template-columns:repeat(4,minmax(0,1fr));max-width:820px;margin:0 auto;width:100%}
+ .bjt .spots{flex-direction:row;align-items:flex-end;justify-content:center;gap:14px}
+ .bjt .others{display:contents}
+ .bjt .others .seat{flex:0 1 190px;min-width:0}
+ .bjt .phands{order:1;flex:none}
+ .bjt .others .seat{display:grid;grid-template-columns:30px 1fr;column-gap:8px;row-gap:4px;align-items:center;justify-items:start;text-align:left;padding:8px 10px}
+ .bjt .others .av{width:30px;height:30px;font-size:13px;grid-row:span 2}.bjt .others .nm{font-size:13px}.bjt .others .stk{font-size:12px}
+ .bjt .others .seat>:not(.av):not(.nm):not(.stk){grid-column:1/-1;justify-self:center}
+ .bjt .others .card.sm{--cw:34px}.bjt .others .minis{min-height:48px}.bjt .others .ohand{padding:2px;gap:3px}
  .spot{width:104px;height:104px}
  .panel{max-width:720px;width:100%;margin:0 auto}
  .tbar{max-width:1060px;width:100%;margin:0 auto}
@@ -608,11 +616,22 @@ function renderBal(d=0){$('balv').textContent=fmt(W.bal);$('mbal').textContent=f
  const b=$('bal');if(d){b.classList.remove('up','down');void b.offsetWidth;b.classList.add(d>0?'up':'down');clearTimeout(balT);balT=setTimeout(()=>b.classList.remove('up','down'),900)}}
 function setBal(v){const nv=Math.max(0,Math.round(v)),d=nv-W.bal;W.bal=nv;LS.set('ddc_wallet3',W);renderBal(d);send({t:'bal',bal:W.bal});brokeCheck()}
 /* another tab of the casino changed the wallet: take its numbers instead of overwriting them */
-addEventListener('storage',e=>{if(e.key!=='ddc_wallet3'||!e.newValue)return;try{const v=JSON.parse(e.newValue);if(v&&Number.isFinite(v.bal)){const d=v.bal-W.bal;Object.assign(W,v);renderBal(d);send({t:'bal',bal:W.bal});brokeCheck()}}catch(x){}});
+addEventListener('storage',e=>{if(e.key!=='ddc_wallet3'||!e.newValue)return;try{const v=JSON.parse(e.newValue);if(v&&Number.isFinite(v.bal)){const d=v.bal-W.bal;Object.assign(W,v);renderBal(d);send({t:'bal',bal:W.bal});brokeCheck();affordCheck()}}catch(x){}});
 /* lost everything? offer a dive straight away (after the hand's result has had a moment on screen) */
 let brokeShown=false,brokeT=0;
 function brokeCheck(){clearTimeout(brokeT);let w;try{w=totalWorth()}catch(e){return}if(w>=BJ_MIN){brokeShown=false;return}
- if(brokeShown)return;brokeT=setTimeout(()=>{if(totalWorth()>=BJ_MIN||brokeShown||!$('splash').hidden||midRound())return;brokeShown=true;openShop(true)},1800)}
+ if(brokeShown)return;brokeT=setTimeout(()=>{if(totalWorth()>=BJ_MIN||brokeShown||!$('splash').hidden||midRound())return;brokeShown=true;leaveBrokeTable();openShop(true)},1800)}
+/* can't cover this table's minimum any more? take them off it (after the round), so they're not stuck at a table they can't play */
+let afT=0;
+function affordCheck(){clearTimeout(afT);afT=setTimeout(()=>{if(midRound()||!$('splash').hidden)return;
+ if(T&&T.S){const S=T.S,i=myIdx(T),p=i>=0?S.seats[i]:null;if(p)T.wasSeated=true;
+  /* the server takes busted poker players off the table, so "was seated and now has no chips" counts too */
+  const cant=S.g==='bj'?!!p&&W.bal<BJ_MIN:!!T.wasSeated&&(!p||p.s<BB)&&W.bal<PK_MIN;
+  if(!cant)return;{leaveTable();go('live');if(totalWorth()>=BJ_MIN)toast(S.g==='bj'?`You need at least ${BJ_MIN} pearls to play, so you've left the table.`:`You're out of chips and need ${fmt(PK_MIN)} pearls to buy back in, so you've left the table.`);brokeCheck()}return}
+ const sp=SOLO.pk.S.seats[0];
+ if(curScreen==='pk'&&sp&&sp.s<BB&&W.bal<PK_MIN&&(SOLO.pk.S.ph==='end'||SOLO.pk.S.ph==='idle')){go('menu');if(totalWorth()>=BJ_MIN)toast(`You need ${fmt(PK_MIN)} pearls to buy back in. Try Blackjack, or get more pearls.`);brokeCheck()}
+ else if(curScreen==='bj'&&W.bal<BJ_MIN&&SOLO.bj.S.ph!=='play'&&SOLO.bj.S.ph!=='deal'&&SOLO.bj.S.ph!=='dealer'&&SOLO.bj.S.ph!=='ins'){go('menu');brokeCheck()}},2200)}
+function leaveBrokeTable(){if(T)leaveTable();if(curScreen==='bj'||curScreen==='pk')go('menu')}
 const addBal=d=>setBal(W.bal+d);
 /* blackjack bets come straight from the wallet: each hand records what you put in (t) and got back (w) */
 const LED=LS.get('ddc_led3',{})||{};
@@ -672,7 +691,7 @@ const pearlsBtn=(l='Get pearls')=>`<div class="btns"><button class="btn" data-k=
    ===================================================================== */
 let T=null; /* the live table you're at */
 const myIdx=tb=>tb.S?tb.S.seats.findIndex(p=>p&&p.c===tb.myId):-1;
-function commit(tb){LS.set('ddc_s3_'+tb.S.g,tb.S);syncLedger(tb);renderTable(tb);drive(tb);if(tb.S.ph==='end'||tb.S.ph==='idle')brokeCheck()}
+function commit(tb){LS.set('ddc_s3_'+tb.S.g,tb.S);syncLedger(tb);renderTable(tb);drive(tb);if(tb.S.ph==='end'||tb.S.ph==='idle'){brokeCheck();affordCheck()}}
 function drive(tb){
  clearTimeout(tb.timer);tb.timer=0;const S=tb.S;if(!S||tb.live)return;
  const now=Date.now();let when=Infinity,fn=null;const at=(t,f)=>{if(t<when){when=t;fn=f}};
@@ -709,7 +728,7 @@ function soloBjDeal(bet){const tb=SOLO.bj,S=tb.S,p=S.seats[0];if(S.ph==='end')bj
 const PRINT=`<div class="print" aria-hidden="true"><div class="pj">${JF}</div><b>DEEPDIVE</b></div>`;
 const PK_TPL=`<div class="neon" aria-hidden="true" style="--nc:var(--aqua)">Texas Hold'em</div><div class="rail"><div class="table pkt">${PRINT}<div class="seats"></div><div class="mid"><div class="lbl pot"></div><div class="hand row board"></div><p class="msg" aria-live="polite"></p></div><div class="me"></div><p class="rule">No-limit Hold'em · Blinds <b>10/20</b> · Buy-in 400 to 2,000 · Rake 5%, max 60, only after the flop</p></div></div><div class="tray"></div>`;
 const ARC=`<svg class="arc" viewBox="0 0 400 74" aria-hidden="true"><defs><path id="arcA" d="M10 22 Q200 96 390 22"/><path id="arcB" d="M30 4 Q200 70 370 4"/></defs><text text-anchor="middle"><textPath href="#arcA" startOffset="50%">Blackjack pays 3 to 2</textPath></text><text class="sub" text-anchor="middle"><textPath href="#arcB" startOffset="50%">Dealer stands on soft 17 · Insurance pays 2 to 1</textPath></text></svg>`;
-const BJ_TPL=`<div class="neon" aria-hidden="true">Blackjack</div><div class="rail"><div class="table bjt"><div class="rack" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="shoe" aria-hidden="true"></div><div class="zone dealer"><div class="lbl"><span class="who"><i class="dmk" aria-hidden="true"></i>Dealer</span><span class="pill dtot" hidden></span></div><div class="hand fan dhand"></div></div>${ARC}<p class="plaque" aria-live="polite"></p><p class="msg" aria-live="polite"></p><div class="seats others" hidden></div><div class="hands phands"></div><p class="rule">Bets <b>10 to 1,000</b> · 6-deck shoe · Double after split · Late surrender</p></div></div><div class="tray"></div>`;
+const BJ_TPL=`<div class="neon" aria-hidden="true">Blackjack</div><div class="rail"><div class="table bjt"><div class="rack" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="shoe" aria-hidden="true"></div><div class="zone dealer"><div class="lbl"><span class="who"><i class="dmk" aria-hidden="true"></i>Dealer</span><span class="pill dtot" hidden></span></div><div class="hand fan dhand"></div></div>${ARC}<p class="plaque" aria-live="polite"></p><p class="msg" aria-live="polite"></p><div class="spots"><div class="seats others" hidden></div><div class="hands phands"></div></div><p class="rule">Bets <b>10 to 1,000</b> · 6-deck shoe · Double after split · Late surrender</p></div></div><div class="tray"></div>`;
 function mount(tb,g){
  tb.root.innerHTML=g==='pk'?PK_TPL:BJ_TPL;tb.mounted=g;tb.lastCtl='';
  if(g==='bj')tb.root.querySelector('.dmk').innerHTML=JF;
@@ -721,6 +740,12 @@ function renderTable(tb){
  (S.g==='pk'?renderPK:renderBJ)(tb);if(dealt)SND.flick();
  if(S.ph==='end'&&tb.endH!==S.h){tb.endH=S.h;const i=myIdx(tb),p=i>=0?S.seats[i]:null;
   if(p&&p.in&&(p.t||p.w)){const net=p.w-p.t;if(net>0)(S.g==='bj'&&p.hs.some(h=>h.r==='Blackjack')?SND.big():SND.win());else if(net<0)SND.lose()}}}
+/* on wide screens the table has a fixed height: if its contents don't fit, shrink the cards until they do */
+const WIDE=matchMedia('(min-width:900px)');
+function fitTable(tb){const t=tb.root.querySelector('.bjt');if(!t)return;t.style.removeProperty('--cw');if(!WIDE.matches)return;
+ const c=t.querySelector('.phands .card,.dhand .card');let cw=c?c.offsetWidth:70;
+ for(let k=0;k<10&&t.scrollHeight>t.clientHeight+2&&cw>42;k++){cw-=4;t.style.setProperty('--cw',cw+'px')}}
+addEventListener('resize',()=>{for(const tb of [SOLO.bj,T])if(tb&&tb.S&&tb.S.g==='bj'&&tb.root.isConnected)fitTable(tb)});
 function setTray(tb,html){const tray=tb.root.querySelector('.tray');if(html===tb.lastCtl)return;
  const f=document.activeElement,fk=f&&tray.contains(f)?(f.dataset.k||'')+'|'+(f.dataset.v||''):'';
  tray.innerHTML=html;tb.lastCtl=html;
@@ -849,10 +874,11 @@ function renderBJ(tb){
  const[m,tone]=bjMsg(tb,me);const mg=R.querySelector('.msg');mg.innerHTML=m;mg.className='msg'+(tone?' '+tone:'');
  const say=dealerSays(S,me),pq=R.querySelector('.plaque');if(pq.dataset.s!==say){pq.dataset.s=say;pq.innerHTML=say?`<i>${JF}</i>${say}`:'';if(S.shuf&&S.ph==='deal')SND.shuffle()}
  const oth=R.querySelector('.others');
- if(S.live){oth.hidden=false;oth.innerHTML=S.seats.map((p,j)=>{if(!p||j===mi)return'';const turn=S.ph==='play'&&S.to===j;
+ if(S.live){oth.hidden=false;oth.innerHTML=S.seats.map((p,j)=>{if(!p||j===mi)return null;const turn=S.ph==='play'&&S.to===j;
    const body=S.ph==='bet'?`<span class="st">${p.rd?'Ready · '+fmt(p.bet):p.lv||p.gone?'Leaving':'Betting<span class="dots"></span>'}</span>`
     :p.in?bjHandHTML(S,j,p,false,turn?S.ha:-1)+(S.ph==='ins'?`<span class="st">${p.ins<0?'Deciding':p.ins?'Insured':'No insurance'}</span>`:''):`<span class="st">Sitting this round out</span>`;
-   return `<div class="seat${turn?' turn':''}">${avatar(p)}<div class="nm">${esc(p.n)}</div><div class="stk">${fmt(p.s)}</div>${body}${turn&&S.dl?timer(S.dl,BJ_TURN):''}</div>`}).join('')||`<p class="watch" style="grid-column:1/-1">No one else is seated yet.</p>`}
+   return {j,h:`${avatar(p)}<div class="nm">${esc(p.n)}</div><div class="stk">${fmt(p.s)}</div>${body}${turn&&S.dl?timer(S.dl,BJ_TURN):''}`,turn}}).filter(Boolean)
+   .map((o,k,all)=>`<div class="seat${o.turn?' turn':''}" style="order:${k<Math.ceil(all.length/2)?0:2}">${o.h}</div>`).join('')||`<p class="watch" style="grid-column:1/-1;order:2">No one else is seated yet.</p>`}
  else oth.hidden=true;
  const ph=R.querySelector('.phands');
  if(!me)ph.innerHTML=`<div class="stake">You're watching this table.</div>`;
@@ -861,7 +887,7 @@ function renderBJ(tb){
    :bet?`<div class="stake"><div class="spot">${chipStack(bet)}</div>${ready?'Ready. Waiting for the deal.':bet<BJ_MIN?`Minimum bet is ${BJ_MIN}.`:'Add chips, then '+(S.live?'tap Ready.':'deal.')}</div>`
    :`<div class="stake"><div class="spot empty">Place<br>bet</div>${W.bal>=BJ_MIN?'Tap the chips below':'Not enough pearls for the minimum bet of '+BJ_MIN+'.'}</div>`}
  else ph.innerHTML=bjHandHTML(S,mi,me,true,S.ph==='play'&&S.to===mi?S.ha:-1);
- setTray(tb,bjCtl(tb,mi,me));if(me&&(S.ph==='play'&&S.to===mi||S.ph==='ins'))reveal(tb,ph,S.tk)}
+ setTray(tb,bjCtl(tb,mi,me));fitTable(tb);if(me&&(S.ph==='play'&&S.to===mi||S.ph==='ins'))reveal(tb,ph,S.tk)}
 function bjCtl(tb,mi,me){
  const S=tb.S;
  if(!me){const full=!S.seats.includes(null);
@@ -961,7 +987,7 @@ function onMsg(m){
    if(m.sit)SS.set('ddc_sat',m.code);if(NET.show){NET.show=false;go('live')}liveRender();break}
   case'nojoin':LS.set('ddc_table','');if(T&&T.code===m.code)T=null;if(!m.auto){const er=$('joinErr');if(er){er.textContent=`There's no open table with code ${String(m.code).replace(/[^A-Z]/g,'')}. Check the code, or start a new table.`;er.hidden=false}}liveRender();break;
   case'state':{if(!T||m.code!==T.code)break;const S=m.S;if(!S||!Array.isArray(S.seats))break;const off=Date.now()-(+m.now||Date.now());
-   if(S.dl)S.dl+=off;if(S.at)S.at+=off;T.S=S;T.people=m.n||1;if(T.sent&&!T.sent.startsWith(S.tk))T.sent='';syncLedger(T);liveRender();if(S.ph==='end'||S.ph==='idle'||S.ph==='bet'&&S.g==='bj')brokeCheck();break}
+   if(S.dl)S.dl+=off;if(S.at)S.at+=off;T.S=S;T.people=m.n||1;if(T.sent&&!T.sent.startsWith(S.tk))T.sent='';syncLedger(T);liveRender();if(S.ph==='end'||S.ph==='idle'||S.ph==='bet'&&S.g==='bj'){brokeCheck();affordCheck()}break}
   case'bought':ledgerOnce(m.id,()=>{addBal(-(+m.amt||0));SND.chip()});break;
   case'cashout':ledgerOnce(m.id,()=>{addBal(+m.amt||0);toast(`Cashed out ${fmt(m.amt)} pearls from table ${String(m.code||'').replace(/[^A-Z]/g,'')}`)});if(T&&T.code===m.code)T.sit=false;break;
   case'left':T=null;LS.set('ddc_table','');liveRender();break;
@@ -1072,7 +1098,8 @@ function myRounds(){const out=[];const add=(S,i,live)=>{if(!S||i<0)return;const 
   const playing=S.g==='bj'?p.in&&S.ph!=='bet'&&S.ph!=='end':p.in&&!p.f&&(S.ph==='bet'||S.ph==='run');out.push({S,p,playing,live})};
  add(SOLO.bj.S,0,false);add(SOLO.pk.S,0,false);if(T&&T.S)add(T.S,myIdx(T),true);return out}
 function totalWorth(){let w=W.bal;for(const r of myRounds()){if(r.S.g==='pk')w+=r.p.s+(r.playing?r.p.t:0);else if(r.playing)w+=r.p.t}return w}
-const midRound=()=>myRounds().some(r=>r.playing);
+/* only the table on screen counts: a solo hand left paused on another screen doesn't block anything */
+const midRound=()=>myRounds().some(r=>r.playing&&(r.live?curScreen==='live':curScreen===r.S.g));
 const rescueReady=()=>Date.now()-(W.life||0)>=LIFE_MS;
 let DV=null;
 function openShop(broke){if(DV)return;shopRender(broke===true);const d=$('shop');if(!d.open)d.showModal()}

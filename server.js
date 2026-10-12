@@ -127,7 +127,7 @@ function sync(t, force) {
   if (S.g === 'bj' && S.ph === 'bet') {
     const act = [];
     for (const p of S.seats) { if (!p) continue; const c = pm.get(p.c); if (c) { p.bet = Math.min(p.s, c.bet); p.rd = c.rd === S.h && p.bet > 0 ? 1 : 0; } if (!p.lv && !p.gone) act.push(p); }
-    if (act.some(p => p.rd)) { if (!S.dl) S.dl = now + 15000; if (act.every(p => p.rd)) E.bjDeal(S); } else S.dl = 0;
+    if (act.some(p => p.rd)) { if (!S.dl) S.dl = now + E.BJ_BET; if (act.every(p => p.rd)) E.bjDeal(S); } else S.dl = 0;
   }
   if (S.g === 'pk' && S.ph === 'bet') { for (let g = 0; g < 8 && S.ph === 'bet'; g++) { const p = S.seats[S.to]; if (p && p.bot < 0 && p.lv) E.pkAct(S, S.to, 'f'); else break; } }
   if (S.g === 'bj' && S.ph === 'ins') for (const p of S.seats) if (p && p.in && p.ins < 0 && (p.lv || p.gone)) E.bjAct(S, S.seats.indexOf(p), 'n');
@@ -180,7 +180,7 @@ function cashOut(t, p, c) {
 /* Publish: everyone gets the table, but only their own hole cards. */
 function commit(t) {
   const S = t.S;
-  if (S.g === 'pk' && S.ph === 'idle') { const n = E.pkEligible(S).length; if (n >= 2 && !S.at) S.at = Date.now() + 3000; if (n < 2) S.at = 0; }
+  if (S.g === 'pk' && S.ph === 'idle') { const n = E.pkEligible(S).length; if (n >= 2 && !S.at) S.at = Date.now() + 1500; if (n < 2) S.at = 0; }
   const json = JSON.stringify(S), now = Date.now();
   for (const c of t.members) send(c, { t: 'state', code: t.code, now, n: t.members.size, S: view(JSON.parse(json), c.cid) });
   drive(t);
