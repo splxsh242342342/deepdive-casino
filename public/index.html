@@ -438,7 +438,7 @@ const SS={get(k){try{return sessionStorage.getItem(k)||''}catch(e){return ''}},s
 const cleanName=s=>String(s||'').replace(/[\u0000-\u001f\u007f<>]/g,'').trim().slice(0,16)||'Diver';
 const secs=t=>Math.max(0,Math.ceil((t-Date.now())/1000));
 /* where live tables run: this page's own server, or the public site when the page is opened somewhere else */
-const LIVE_SITE='';
+const LIVE_SITE='https://deepdive-casino.onrender.com';
 const CAN_LIVE=/^https?:$/.test(location.protocol)&&!window.claude;
 let CID=SS.get('ddc_cid');if(!CID){CID='d'+rid()+rid();SS.set('ddc_cid',CID)}  /* one player per browser tab */
 let WID=LS.get('ddc_wid','');if(!WID){WID='w'+rid()+rid();LS.set('ddc_wid',WID)} /* one wallet per browser */
