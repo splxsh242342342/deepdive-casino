@@ -588,7 +588,7 @@ addEventListener('storage',e=>{if(e.key!=='ddc_wallet3'||!e.newValue)return;try{
 /* lost everything? offer a dive straight away (after the hand's result has had a moment on screen) */
 let brokeShown=false,brokeT=0;
 function brokeCheck(){clearTimeout(brokeT);let w;try{w=totalWorth()}catch(e){return}if(w>=BJ_MIN){brokeShown=false;return}
- if(brokeShown)return;brokeT=setTimeout(()=>{if(totalWorth()>=BJ_MIN||brokeShown||!$('splash').hidden)return;brokeShown=true;openShop(true)},1800)}
+ if(brokeShown)return;brokeT=setTimeout(()=>{if(totalWorth()>=BJ_MIN||brokeShown||!$('splash').hidden||midRound())return;brokeShown=true;openShop(true)},1800)}
 const addBal=d=>setBal(W.bal+d);
 /* blackjack bets come straight from the wallet: each hand records what you put in (t) and got back (w) */
 const LED=LS.get('ddc_led3',{})||{};
@@ -1043,7 +1043,12 @@ const dailyAmt=st=>DAILY[Math.min(st,7)-1];
 const midnight=()=>{const d=new Date();d.setHours(24,0,0,0);return d.getTime()};
 const hms=ms=>{const s=Math.max(0,Math.ceil(ms/1000)),h=s/3600|0,m=(s%3600)/60|0;return h?`${h}h ${String(m).padStart(2,'0')}m`:`${m}m ${String(s%60).padStart(2,'0')}s`};
 const divesLeft=()=>W.dv.day===today()?Math.max(0,DIVES-W.dv.n):DIVES;
-function totalWorth(){let w=W.bal+(SOLO.pk.S.seats[0]?SOLO.pk.S.seats[0].s:0);if(T&&T.S&&T.S.g==='pk'){const i=myIdx(T);if(i>=0)w+=T.S.seats[i].s+T.S.seats[i].t}return w}
+/* everything you own: wallet + chips sitting at tables + bets still riding on a round that hasn't finished */
+function myRounds(){const out=[];const add=(S,i,live)=>{if(!S||i<0)return;const p=S.seats[i];if(!p)return;
+  const playing=S.g==='bj'?p.in&&S.ph!=='bet'&&S.ph!=='end':p.in&&!p.f&&(S.ph==='bet'||S.ph==='run');out.push({S,p,playing,live})};
+ add(SOLO.bj.S,0,false);add(SOLO.pk.S,0,false);if(T&&T.S)add(T.S,myIdx(T),true);return out}
+function totalWorth(){let w=W.bal;for(const r of myRounds()){if(r.S.g==='pk')w+=r.p.s+(r.playing?r.p.t:0);else if(r.playing)w+=r.p.t}return w}
+const midRound=()=>myRounds().some(r=>r.playing);
 const rescueReady=()=>Date.now()-(W.life||0)>=LIFE_MS;
 let DV=null;
 function openShop(broke){if(DV)return;shopRender(broke===true);const d=$('shop');if(!d.open)d.showModal()}
