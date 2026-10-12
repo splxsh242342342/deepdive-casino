@@ -20,14 +20,24 @@ const SHELL = '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta 
   '<link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="manifest" href="/manifest.webmanifest">' +
   `<meta property="og:type" content="website"><meta property="og:site_name" content="Deepdive Casino"><meta property="og:title" content="Deepdive Casino"><meta property="og:description" content="Blackjack and Texas Hold'em in the deep. Play friends live, no sign-up."><meta property="og:url" content="${SITE}/"><meta property="og:image" content="${SITE}/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image">` +
   '<style>:root{padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}</style></head><body>';
-let page = '';
-const loadPage = () => (page = SHELL + fs.readFileSync(path.join(PUB, 'index.html'), 'utf8') + '</body></html>');
+/* Google AdSense: set ADSENSE_CLIENT (ca-pub-...) on the host to switch ads on; ADSENSE_SLOT for the display ad unit; ADSENSE_TEST=1 for test ads */
+const ADS = { client: (process.env.ADSENSE_CLIENT || '').trim(), slot: (process.env.ADSENSE_SLOT || '').trim().replace(/\D/g, ''), test: process.env.ADSENSE_TEST === '1' };
+const ADS_ON = /^ca-pub-\d{10,20}$/.test(ADS.client);
+const ADS_TAG = ADS_ON ? `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADS.client}" crossorigin="anonymous" data-ad-frequency-hint="30s"${ADS.test ? ' data-adbreak-test="on"' : ''}></script>` +
+  `<script>window.adsbygoogle=window.adsbygoogle||[];window.adBreak=window.adConfig=function(o){adsbygoogle.push(o)};window.DDC_ADS=${JSON.stringify(ADS)};</script>` : '';
+let page = '', privacy = '';
+const loadPage = () => {
+  page = SHELL.replace('</head>', ADS_TAG + '</head>') + fs.readFileSync(path.join(PUB, 'index.html'), 'utf8') + '</body></html>';
+  privacy = SHELL.replace('</head>', ADS_TAG + '</head>') + fs.readFileSync(path.join(PUB, 'privacy.html'), 'utf8') + '</body></html>';
+};
 loadPage();
 
 const app = express();
 app.disable('x-powered-by');
 app.get(['/', '/index.html'], (_, res) => { if (!PROD) loadPage(); res.set('Cache-Control', 'no-cache').type('html').send(page); });
-app.get('/api/health', (_, res) => res.json({ ok: true, tables: tables.size, players: clients.size }));
+app.get(['/privacy', '/privacy.html'], (_, res) => { if (!PROD) loadPage(); res.set('Cache-Control', 'no-cache').type('html').send(privacy); });
+app.get('/ads.txt', (_, res) => ADS_ON ? res.type('text/plain').send(`google.com, ${ADS.client.replace(/^ca-/, '')}, DIRECT, f08c47fec0942fa0\n`) : res.status(404).type('text/plain').send('Ads are not set up yet.\n'));
+app.get('/api/health', (_, res) => res.json({ ok: true, tables: tables.size, players: clients.size, ads: ADS_ON }));
 app.use(express.static(PUB, { index: false, setHeaders: r => r.set('Cache-Control', 'no-cache') }));
 
 const server = http.createServer(app);

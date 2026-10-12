@@ -106,6 +106,8 @@ main{position:relative;z-index:1;max-width:620px;margin:0 auto;padding-inline:16
 .tile .bigdot i{width:14px;height:14px;border-radius:50%;background:var(--krill);box-shadow:0 0 14px var(--krill),0 0 30px #ff8ad888}
 .mrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
+.adbox{grid-column:1/-1;width:100%;max-width:728px;min-height:100px;margin:0 auto;padding:8px;border-radius:14px;border:1px solid #ffffff10;background:#02081499;overflow:hidden;text-align:center}
+.adbox:before{content:'Advertisement';display:block;margin-bottom:4px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
 .learn{display:flex;align-items:center;gap:12px;width:100%;min-height:52px;padding:8px 14px;border-radius:14px;border:1px solid #a98bff55;background:linear-gradient(90deg,#a98bff1f,#6ff7e10d);text-align:left;font-weight:800;font-size:15px}
 .learn small{display:block;font-weight:500;color:var(--mut);font-size:13px}
 .learn .go{margin-left:auto;color:var(--aqua);font-size:14px;white-space:nowrap}
@@ -485,6 +487,7 @@ footer{position:relative;z-index:1;text-align:center;color:var(--mut);font-size:
    <a class="tile" href="#live"><div><h3><i class="live-dot" aria-hidden="true"></i>Live tables</h3><p>Play your friends in real time. Share a 4-letter code, no sign-up.</p><span class="tag" id="liveTag">Blackjack and Hold'em</span></div><div class="bigdot" aria-hidden="true"><i></i></div></a>
   </nav>
   <div class="mrow"><button class="btn alt sm" data-help="">How to play</button><button class="btn alt sm" id="setBtn2">Settings</button></div>
+  <div class="adbox" id="adMenu" hidden></div>
  </section>
 
  <section class="screen" id="scr-bj" aria-labelledby="ttl" hidden>
@@ -500,7 +503,7 @@ footer{position:relative;z-index:1;text-align:center;color:var(--mut);font-size:
   <div id="tableWrap" hidden><div class="tbar" id="tbar"></div><div id="liveGame"></div></div>
  </section>
 </main>
-<footer>Play money only. Pearls have no cash value and can't be bought or cashed out.</footer>
+<footer>Play money only. Pearls have no cash value and can't be bought or cashed out. <a href="/privacy" style="color:inherit">Privacy</a></footer>
 
 <dialog id="help" aria-labelledby="helpT">
  <div class="dh"><h2 id="helpT">How to play</h2><button class="icon" data-close aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
@@ -592,7 +595,7 @@ const SND=(()=>{let ctx=null,out=null,on=LS.get('ddc_snd2',true),mus=LS.get('ddc
  function duck(){if(!musG)return;const t=ctx.currentTime,g=musG.gain;g.cancelScheduledValues(t);g.setValueAtTime(g.value,t);g.linearRampToValueAtTime(lvl()*.35,t+.05);g.linearRampToValueAtTime(lvl(),t+1.6)}
  document.addEventListener('pointerdown',()=>{if(on)init();if(ctx&&ctx.state==='suspended')ctx.resume();if(on&&mus)musStart()},{passive:true});
  document.addEventListener('visibilitychange',()=>{if(!ctx)return;if(document.hidden)ctx.suspend&&ctx.suspend();else if(on)ctx.resume()});
- return{get on(){return on},get mus(){return mus},get vol(){return vol},set(v){on=v;LS.set('ddc_snd2',v);if(v){init();musStart()}else musStop()},
+ return{pause(){if(ctx&&ctx.state==='running')ctx.suspend()},resume(){if(ctx&&on)ctx.resume()},get on(){return on},get mus(){return mus},get vol(){return vol},set(v){on=v;LS.set('ddc_snd2',v);if(v){init();musStart()}else musStop()},
   setMus(v){mus=v;LS.set('ddc_mus',v);if(v){init();musStart()}else musStop()},
   setVol(v){vol=Math.max(0,Math.min(1,v));LS.set('ddc_musv',vol);if(musG){const t=ctx.currentTime;musG.gain.cancelScheduledValues(t);musG.gain.setTargetAtTime(lvl(),t,.1)}},
   flick(){if(!ok())return;noise(ctx.currentTime,.07,2600,.5)},
@@ -1102,7 +1105,7 @@ function totalWorth(){let w=W.bal;for(const r of myRounds()){if(r.S.g==='pk')w+=
 const midRound=()=>myRounds().some(r=>r.playing&&(r.live?curScreen==='live':curScreen===r.S.g));
 const rescueReady=()=>Date.now()-(W.life||0)>=LIFE_MS;
 let DV=null;
-function openShop(broke){if(DV)return;shopRender(broke===true);const d=$('shop');if(!d.open)d.showModal()}
+function openShop(broke){if(DV)return;offerReward();shopRender(broke===true);const d=$('shop');if(!d.open)d.showModal()}
 $('bal').onclick=()=>openShop();$('walletBtn').onclick=()=>openShop();
 $('shop').addEventListener('close',()=>{if(DV)diveEnd(true)});
 function shopRender(brokeNow){
@@ -1115,10 +1118,12 @@ function shopRender(brokeNow){
   <p>${claimed?`Opened today. Tomorrow's chest holds <b>${fmt(dailyAmt(W.streak+1))}</b>.`:`Open one chest a day. Come back on consecutive days and it grows to 300 on day 7.`}</p>
   <div class="streak" aria-hidden="true">${bar}</div>
   ${claimed?`<div class="wait">Next chest in <b data-hms="${midnight()}">${hms(midnight()-Date.now())}</b></div>`:`<button class="btn" id="claim">Open chest: +${fmt(dailyAmt(curSt+1))}</button>`}</div>
+ ${rewardShow&&adsLeft()?`<div class="offer"><h3>Watch an ad<small>${adsLeft()} of ${AD_DAY} left today</small></h3><p>Watch a short ad from our sponsors and get <b>${AD_PEARLS}</b> pearls.</p><button class="btn alt" id="adGo">Watch ad: +${AD_PEARLS}</button></div>`:''}
  <div class="offer"><h3>Pearl Dive<small>${dl} of ${DIVES} left today</small></h3>
   <p>Twenty seconds in the deep. Tap pearls (+2) and gold pearls (+10). A jellyfish stings you for 5.</p>
   ${dl?'<button class="btn alt" id="diveGo">Start a dive</button>':`<div class="wait">More dives in <b data-hms="${midnight()}">${hms(midnight()-Date.now())}</b></div>`}</div>
  <p class="note">Pearls are play money. They can't be bought, sold or cashed out.</p>`;
+ const ag=$('adGo');if(ag)ag.onclick=()=>{const f=rewardShow;rewardShow=null;if(f)f()};
  const c=$('claim');if(c)c.onclick=claim;const dg=$('diveGo');if(dg)dg.onclick=()=>diveStart();const dn=$('diveNow');if(dn){dn.onclick=()=>diveStart();if(brokeNow)setTimeout(()=>dn.focus(),50)}}
 function claim(){if(W.day===today())return;W.streak=W.day===yday()?W.streak+1:1;W.day=today();const a=dailyAmt(W.streak);addBal(a);SND.big();toast(`+${fmt(a)} pearls. Day ${W.streak} streak.`);shopRender()}
 function diveStart(){
@@ -1158,6 +1163,22 @@ function diveEnd(closing){const d=DV;if(!d)return;DV=null;cancelAnimationFrame(d
   <div class="btns c2"><button class="btn alt" id="dvBack">Back</button><button class="btn" id="dvAgain" ${divesLeft()?'':'disabled'}>Dive again</button></div>`;
  $('dvBack').onclick=shopRender;$('dvAgain').onclick=diveStart;($('dvAgain').disabled?$('dvBack'):$('dvAgain')).focus()}
 
+/* ---------- ads (only when the server has an AdSense publisher ID set) ---------- */
+const ADS=window.DDC_ADS&&/^ca-pub-\d+$/.test(window.DDC_ADS.client)?window.DDC_ADS:null;
+function placeAd(box){if(!ADS||!ADS.slot||!box||box.dataset.ad)return;box.dataset.ad=1;box.hidden=false;
+ box.insertAdjacentHTML('beforeend',`<ins class="adsbygoogle" style="display:block" data-ad-client="${ADS.client}" data-ad-slot="${ADS.slot}" data-ad-format="auto" data-full-width-responsive="true"${ADS.test?' data-adtest="on"':''}></ins>`);
+ try{(window.adsbygoogle=window.adsbygoogle||[]).push({})}catch(e){}}
+if(ADS){try{window.adConfig({preloadAdBreaks:'on',sound:'on'})}catch(e){}}
+/* rewarded ad: Google only calls beforeReward when it has an ad ready, so the offer appears only then */
+const AD_PEARLS=100,AD_DAY=5;let rewardShow=null;
+const adsLeft=()=>{const a=W.ad||{};return a.day===today()?Math.max(0,AD_DAY-a.n):AD_DAY};
+function offerReward(){if(!ADS||typeof window.adBreak!=='function'||!adsLeft()||rewardShow)return;
+ try{window.adBreak({type:'reward',name:'pearls',
+  beforeAd(){SND.pause()},afterAd(){SND.resume();rewardShow=null;if($('shop').open&&!DV)shopRender()},
+  beforeReward(show){rewardShow=show;if($('shop').open&&!DV)shopRender()},
+  adDismissed(){toast('Watch the whole ad to get the pearls.')},
+  adViewed(){const a=W.ad&&W.ad.day===today()?W.ad:{day:today(),n:0};W.ad={day:a.day,n:a.n+1};addBal(AD_PEARLS);SND.win();toast(`+${AD_PEARLS} pearls. Thanks for watching!`)}})}catch(e){}}
+
 /* ---------- settings ---------- */
 function setRender(){$('sndSw').setAttribute('aria-checked',SND.on);$('musSw').setAttribute('aria-checked',SND.mus);$('musSw').disabled=!SND.on;$('musV').value=Math.round(SND.vol*100);$('musV').disabled=!SND.on||!SND.mus;document.querySelectorAll('[data-fx]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.fx===FX));
  $('fxNote').textContent=FX==='auto'?`Auto picked ${AUTO_LITE?'Lite':'Full'} for this device.`:FX==='lite'?'Lite turns off glows, bubbles and floating animation. Best for older phones.':'Full turns on every glow and animation.'}
@@ -1181,7 +1202,8 @@ function showScreen(s){
  document.title=s==='menu'?'Deepdive Casino':(s==='pk'?"Texas Hold'em":TITLE[s])+' · Deepdive Casino';
  if(s==='bj'||s==='pk'){const tb=SOLO[s];renderTable(tb);drive(tb)}
  if(s==='live'){$('lobby').dataset.m&&lobbyRender();liveRender();if(!T)lobbyRender()}
- if(s==='menu')menuLive();
+ if(s==='menu'){menuLive();placeAd($('adMenu'))}
+ if(s==='live'&&!T){const lb=$('lobby');if(lb.dataset.m&&!$('adLobby')){lb.insertAdjacentHTML('beforeend','<div class="adbox" id="adLobby" hidden style="margin-top:14px"></div>')}placeAd($('adLobby'))}
  scrollTo(0,0);if(prev&&s!=='menu')$('ttl').focus({preventScroll:true})}
 function routeFromHash(){const h=location.hash.slice(1),m=/^join-([A-Za-z]{4})$/.exec(h);
  if(m){linkCode=m[1].toUpperCase();history.replaceState(null,'',location.pathname+location.search+'#live');if($('splash').hidden){const c=linkCode;linkCode='';joinFromLink(c)}return 'live'}

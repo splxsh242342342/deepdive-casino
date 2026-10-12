@@ -36,3 +36,15 @@ Live tables live in the server's memory. On a redeploy or restart the server cas
 ## Limits
 
 Wallets are stored in the player's browser, so a determined player can edit theirs. That's fine for play money. Cards are dealt by the server, so nobody can see other players' hole cards or the deck.
+
+## Ads (Google AdSense)
+
+Ads stay off until you set environment variables on the host (Render > the service > Environment):
+
+- `ADSENSE_CLIENT`: your publisher ID, like `ca-pub-1234567890123456`. This loads the AdSense script, which is what Google checks when it reviews the site, and serves `/ads.txt`.
+- `ADSENSE_SLOT`: the ID of a responsive display ad unit you create in AdSense. Ads then appear in the main menu and the Live tables lobby, away from the game controls.
+- `ADSENSE_TEST=1`: shows test ads while you check things. Remove it before going live.
+
+Rewarded ads ("watch an ad for +100 pearls", up to 5 a day) use Google's H5 Games Ads (`adBreak`). The offer appears in Get pearls only when Google has an ad ready, so it stays hidden until your account is approved for it.
+
+The privacy policy is at `/privacy`. Turn on Google's consent message for Europe in AdSense under Privacy & messaging.
