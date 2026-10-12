@@ -104,10 +104,19 @@ main{position:relative;z-index:1;max-width:620px;margin:0 auto;padding-inline:16
 .live-dot{display:inline-block;width:8px;height:8px;margin-right:6px;border-radius:50%;background:var(--krill);box-shadow:0 0 8px var(--krill);vertical-align:2px}
 .tile .bigdot{display:grid;place-items:center;width:64px;height:64px;border-radius:50%;background:radial-gradient(circle,#ff8ad833,transparent 70%)}
 .tile .bigdot i{width:14px;height:14px;border-radius:50%;background:var(--krill);box-shadow:0 0 14px var(--krill),0 0 30px #ff8ad888}
-.mrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mrow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.xpromo{display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:16px;border:1px solid var(--edge);background:#081428cc;color:var(--foam);grid-column:1/-1}
+.xpromo img{width:34px;height:44px;flex:none}.xpromo b{display:block}.xpromo small{color:var(--mut);font-size:13px}.xpromo .go{margin-left:auto;color:var(--aqua);font-weight:800;font-size:14px;white-space:nowrap}
+.btn.hinted{box-shadow:0 0 0 3px var(--gold),0 0 24px -2px var(--gold)!important}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.stat{padding:12px 14px;border-radius:14px;border:1px solid var(--edge);background:#0e1f3a80;min-width:0}
+.stat b{display:block;font-size:24px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.stat span{color:var(--mut);font-size:13px;font-weight:600}
+.stats h3{grid-column:1/-1;margin:6px 0 0;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+.reacts{display:flex;flex-wrap:wrap;gap:6px}.reacts button{min-height:40px;padding:6px 12px;border-radius:999px;border:1px solid var(--edge);background:#0e1f3a;font-weight:700;font-size:14px}
+.bubble{position:fixed;z-index:30;padding:7px 13px;border-radius:14px;background:var(--pearl);color:var(--ink);font-weight:800;font-size:14px;white-space:nowrap;pointer-events:none;box-shadow:0 10px 24px -10px #000;animation:bub 2.6s var(--ease-out) forwards}
+.bubble:after{content:'';position:absolute;left:50%;bottom:-6px;margin-left:-6px;border:6px solid transparent;border-bottom:0;border-top-color:var(--pearl)}
+@keyframes bub{0%{opacity:0;transform:translate(-50%,-70%)}10%{opacity:1;transform:translate(-50%,-110%)}85%{opacity:1;transform:translate(-50%,-110%)}100%{opacity:0;transform:translate(-50%,-125%)}}
 
-.adbox{grid-column:1/-1;width:100%;max-width:728px;min-height:100px;margin:0 auto;padding:8px;border-radius:14px;border:1px solid #ffffff10;background:#02081499;overflow:hidden;text-align:center}
-.adbox:before{content:'Advertisement';display:block;margin-bottom:4px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
 .learn{display:flex;align-items:center;gap:12px;width:100%;min-height:52px;padding:8px 14px;border-radius:14px;border:1px solid #a98bff55;background:linear-gradient(90deg,#a98bff1f,#6ff7e10d);text-align:left;font-weight:800;font-size:15px}
 .learn small{display:block;font-weight:500;color:var(--mut);font-size:13px}
 .learn .go{margin-left:auto;color:var(--aqua);font-size:14px;white-space:nowrap}
@@ -486,8 +495,8 @@ footer{position:relative;z-index:1;text-align:center;color:var(--mut);font-size:
    <a class="tile" href="#holdem"><div><h3>Texas Hold'em</h3><p>No-limit poker against Octavia, Mako and Lumen.</p><span class="tag">Buy in 400 to 2,000</span></div><div class="fan" id="fanPk" aria-hidden="true"></div></a>
    <a class="tile" href="#live"><div><h3><i class="live-dot" aria-hidden="true"></i>Live tables</h3><p>Play your friends in real time. Share a 4-letter code, no sign-up.</p><span class="tag" id="liveTag">Blackjack and Hold'em</span></div><div class="bigdot" aria-hidden="true"><i></i></div></a>
   </nav>
-  <div class="mrow"><button class="btn alt sm" data-help="">How to play</button><button class="btn alt sm" id="setBtn2">Settings</button></div>
-  <div class="adbox" id="adMenu" hidden></div>
+  <div class="mrow"><button class="btn alt sm" data-help="">How to play</button><button class="btn alt sm" id="statsBtn">Your stats</button><button class="btn alt sm" id="setBtn2">Settings</button></div>
+  <a class="xpromo" href="https://deepdive.ardanstudio.ie" target="_blank" rel="noopener"><img src="deepdive-mark.svg" alt="" width="34" height="44"><span><b>Play Deepdive</b><small>The daily word game: the rarer your answer, the deeper you sink</small></span><span class="go">Open</span></a>
  </section>
 
  <section class="screen" id="scr-bj" aria-labelledby="ttl" hidden>
@@ -524,6 +533,10 @@ footer{position:relative;z-index:1;text-align:center;color:var(--mut);font-size:
   <div class="field"><label for="nameI">Your name at the table</label><input type="text" id="nameI" maxlength="16" autocomplete="nickname" spellcheck="false" required aria-describedby="nameErr"><p class="err" id="nameErr" hidden></p></div>
   <div class="btns c2"><button type="button" class="btn alt" data-close>Cancel</button><button class="btn" type="submit" id="nameGo">Join table</button></div></div>
  </form>
+</dialog>
+<dialog id="stats" aria-labelledby="statsT">
+ <div class="dh"><h2 id="statsT">Your stats</h2><button class="icon" data-close aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+ <div class="db"><div class="stats" id="statsBody"></div><p class="note">Stats are kept in this browser.</p><button class="link" id="statsReset" style="align-self:flex-start">Reset stats</button></div>
 </dialog>
 <dialog id="settings" aria-labelledby="setT">
  <div class="dh"><h2 id="setT">Settings</h2><button class="icon" data-close aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
@@ -595,7 +608,7 @@ const SND=(()=>{let ctx=null,out=null,on=LS.get('ddc_snd2',true),mus=LS.get('ddc
  function duck(){if(!musG)return;const t=ctx.currentTime,g=musG.gain;g.cancelScheduledValues(t);g.setValueAtTime(g.value,t);g.linearRampToValueAtTime(lvl()*.35,t+.05);g.linearRampToValueAtTime(lvl(),t+1.6)}
  document.addEventListener('pointerdown',()=>{if(on)init();if(ctx&&ctx.state==='suspended')ctx.resume();if(on&&mus)musStart()},{passive:true});
  document.addEventListener('visibilitychange',()=>{if(!ctx)return;if(document.hidden)ctx.suspend&&ctx.suspend();else if(on)ctx.resume()});
- return{pause(){if(ctx&&ctx.state==='running')ctx.suspend()},resume(){if(ctx&&on)ctx.resume()},get on(){return on},get mus(){return mus},get vol(){return vol},set(v){on=v;LS.set('ddc_snd2',v);if(v){init();musStart()}else musStop()},
+ return{get on(){return on},get mus(){return mus},get vol(){return vol},set(v){on=v;LS.set('ddc_snd2',v);if(v){init();musStart()}else musStop()},
   setMus(v){mus=v;LS.set('ddc_mus',v);if(v){init();musStart()}else musStop()},
   setVol(v){vol=Math.max(0,Math.min(1,v));LS.set('ddc_musv',vol);if(musG){const t=ctx.currentTime;musG.gain.cancelScheduledValues(t);musG.gain.setTargetAtTime(lvl(),t,.1)}},
   flick(){if(!ok())return;noise(ctx.currentTime,.07,2600,.5)},
@@ -617,7 +630,21 @@ let balT=0;
 function renderBal(d=0){$('balv').textContent=fmt(W.bal);$('mbal').textContent=fmt(W.bal);$('bal').setAttribute('aria-label',`${fmt(W.bal)} pearls. Get more pearls`);
  const st=SOLO&&SOLO.pk.S.seats[0]?SOLO.pk.S.seats[0].s:0;$('mbalNote').textContent=st?`pearls in your wallet, plus ${fmt(st)} at the Hold'em table`:'pearls in your wallet';
  const b=$('bal');if(d){b.classList.remove('up','down');void b.offsetWidth;b.classList.add(d>0?'up':'down');clearTimeout(balT);balT=setTimeout(()=>b.classList.remove('up','down'),900)}}
-function setBal(v){const nv=Math.max(0,Math.round(v)),d=nv-W.bal;W.bal=nv;LS.set('ddc_wallet3',W);renderBal(d);send({t:'bal',bal:W.bal});brokeCheck()}
+function setBal(v){const nv=Math.max(0,Math.round(v)),d=nv-W.bal;W.bal=nv;LS.set('ddc_wallet3',W);renderBal(d);send({t:'bal',bal:W.bal});if(W.bal>ST.peak){ST.peak=W.bal;LS.set('ddc_stats',ST)}brokeCheck()}
+/* ---------- your stats ---------- */
+const ST=(()=>{const d={bj:{h:0,w:0,l:0,p:0,bj:0,best:0},pk:{h:0,w:0,best:0,bh:'',bs:0},peak:1000,seen:[]};const v=LS.get('ddc_stats',null);
+ if(!v||typeof v!=='object')return d;return{bj:Object.assign(d.bj,v.bj),pk:Object.assign(d.pk,v.pk),peak:+v.peak||1000,seen:Array.isArray(v.seen)?v.seen:[]}})();
+function statsRecord(tb){const S=tb.S,i=myIdx(tb),p=i>=0?S.seats[i]:null;if(!p||!p.in)return;const key=tb.key+':'+S.h;if(ST.seen.includes(key))return;ST.seen=ST.seen.concat(key).slice(-40);
+ if(S.g==='bj'){for(const h of p.hs){ST.bj.h++;if(h.r==='Win'||h.r==='Blackjack')ST.bj.w++;else if(h.r==='Push')ST.bj.p++;else ST.bj.l++;if(h.r==='Blackjack')ST.bj.bj++}ST.bj.best=Math.max(ST.bj.best,p.w-p.t)}
+ else{ST.pk.h++;const won=(S.wn||[]).find(x=>x.i===i);if(won){ST.pk.w++;ST.pk.best=Math.max(ST.pk.best,won.a-p.t)}
+  if(p.sh&&p.hc){const e=ev(cards(p.hc,'x').concat(cards(S.bd,'x'))),sc=score(e);if(sc>ST.pk.bs){ST.pk.bs=sc;ST.pk.bh=describe(e)}}}
+ LS.set('ddc_stats',ST)}
+function statsRender(){const b=ST.bj,k=ST.pk,pct=(a,n)=>n?Math.round(a/n*100)+'%':'–';
+ $('statsBody').innerHTML=`<h3>Blackjack</h3><div class="stat"><b>${fmt(b.h)}</b><span>Hands played</span></div><div class="stat"><b>${pct(b.w,b.h)}</b><span>Hands won</span></div>
+  <div class="stat"><b>${fmt(b.bj)}</b><span>Blackjacks</span></div><div class="stat"><b>${b.best>0?'+'+fmt(b.best):'–'}</b><span>Biggest win</span></div>
+  <h3>Texas Hold'em</h3><div class="stat"><b>${fmt(k.h)}</b><span>Hands played</span></div><div class="stat"><b>${fmt(k.w)}</b><span>Pots won</span></div>
+  <div class="stat"><b>${k.best>0?'+'+fmt(k.best):'–'}</b><span>Biggest pot</span></div><div class="stat"><b style="font-size:17px">${k.bh?esc(k.bh):'–'}</b><span>Best hand at showdown</span></div>
+  <h3>Pearls</h3><div class="stat"><b>${fmt(W.bal)}</b><span>In your wallet</span></div><div class="stat"><b>${fmt(Math.max(ST.peak,W.bal))}</b><span>Highest balance</span></div>`}
 /* another tab of the casino changed the wallet: take its numbers instead of overwriting them */
 addEventListener('storage',e=>{if(e.key!=='ddc_wallet3'||!e.newValue)return;try{const v=JSON.parse(e.newValue);if(v&&Number.isFinite(v.bal)){const d=v.bal-W.bal;Object.assign(W,v);renderBal(d);send({t:'bal',bal:W.bal});brokeCheck();affordCheck()}}catch(x){}});
 /* lost everything? offer a dive straight away (after the hand's result has had a moment on screen) */
@@ -741,7 +768,7 @@ function mount(tb,g){
 function renderTable(tb){
  const S=tb.S;if(!S||!tb.root.isConnected)return;if(tb.mounted!==S.g)mount(tb,S.g);dealt=false;
  (S.g==='pk'?renderPK:renderBJ)(tb);if(dealt)SND.flick();
- if(S.ph==='end'&&tb.endH!==S.h){tb.endH=S.h;const i=myIdx(tb),p=i>=0?S.seats[i]:null;
+ if(S.ph==='end'&&tb.endH!==S.h){tb.endH=S.h;statsRecord(tb);const i=myIdx(tb),p=i>=0?S.seats[i]:null;
   if(p&&p.in&&(p.t||p.w)){const net=p.w-p.t;if(net>0)(S.g==='bj'&&p.hs.some(h=>h.r==='Blackjack')?SND.big():SND.win());else if(net<0)SND.lose()}}}
 /* on wide screens the table has a fixed height: if its contents don't fit, shrink the cards until they do */
 const WIDE=matchMedia('(min-width:900px)');
@@ -774,7 +801,7 @@ function pkSeatHTML(tb,j){
  if(p.out)st='Sitting out';if(p.gone)st='Disconnected';
  if(turn)st=p.bot>=0?'<span class="dots">Thinking</span>':'Deciding';
  const outC=S.ph!=='idle'&&(!p.in||p.f)&&!won;
- return `<div class="seat${turn?' turn':''}${outC?' out':''}${won?' win':''}">${avatar(p,S.btn===j&&S.h)}<div class="nm">${esc(p.n)}</div><div class="stk">${fmt(p.s)}</div><div class="minis">${cs}</div><span class="st${turn?' go':''}${won?' w':''}">${st||'&nbsp;'}</span>${turn&&S.live&&p.bot<0&&S.dl?timer(S.dl,PK_TURN):''}${chipStack(p.b)}</div>`}
+ return `<div class="seat${turn?' turn':''}${outC?' out':''}${won?' win':''}" data-j="${j}">${avatar(p,S.btn===j&&S.h)}<div class="nm">${esc(p.n)}</div><div class="stk">${fmt(p.s)}</div><div class="minis">${cs}</div><span class="st${turn?' go':''}${won?' w':''}">${st||'&nbsp;'}</span>${turn&&S.live&&p.bot<0&&S.dl?timer(S.dl,PK_TURN):''}${chipStack(p.b)}</div>`}
 /* where the other players sit around the oval on wide screens (percent of the table), by how many there are */
 const SEATPOS={1:[[50,16]],2:[[34,17],[66,17]],3:[[11,47],[50,16],[89,47]],4:[[11,55],[31,19],[69,19],[89,55]],5:[[11,62],[27,22],[50,15],[73,22],[89,62]]};
 function renderPK(tb){
@@ -881,7 +908,7 @@ function renderBJ(tb){
    const body=S.ph==='bet'?`<span class="st">${p.rd?'Ready · '+fmt(p.bet):p.lv||p.gone?'Leaving':'Betting<span class="dots"></span>'}</span>`
     :p.in?bjHandHTML(S,j,p,false,turn?S.ha:-1)+(S.ph==='ins'?`<span class="st">${p.ins<0?'Deciding':p.ins?'Insured':'No insurance'}</span>`:''):`<span class="st">Sitting this round out</span>`;
    return {j,h:`${avatar(p)}<div class="nm">${esc(p.n)}</div><div class="stk">${fmt(p.s)}</div>${body}${turn&&S.dl?timer(S.dl,BJ_TURN):''}`,turn}}).filter(Boolean)
-   .map((o,k,all)=>`<div class="seat${o.turn?' turn':''}" style="order:${k<Math.ceil(all.length/2)?0:2}">${o.h}</div>`).join('')||`<p class="watch" style="grid-column:1/-1;order:2">No one else is seated yet.</p>`}
+   .map((o,k,all)=>`<div class="seat${o.turn?' turn':''}" data-j="${o.j}" style="order:${k<Math.ceil(all.length/2)?0:2}">${o.h}</div>`).join('')||`<p class="watch" style="grid-column:1/-1;order:2">No one else is seated yet.</p>`}
  else oth.hidden=true;
  const ph=R.querySelector('.phands');
  if(!me)ph.innerHTML=`<div class="stake">You're watching this table.</div>`;
@@ -906,14 +933,16 @@ function bjCtl(tb,mi,me){
   if(!me.in||me.ins>=0)return wait(me.in?(me.ins?'Insured. Waiting for the others':'No insurance. Waiting for the others')+'<span class="dots"></span>':"You're sitting this round out");
   const cost=Math.floor(me.hs[0].b/2),even=isBJh(me.hs[0]);
   return `<div class="panel2"><p>${even?`You have blackjack and the dealer shows an ace. Take <b>even money</b> to get paid 1 to 1 now (costs ${fmt(cost)} in insurance).`:`Insurance costs <b>${fmt(cost)}</b> and pays 2 to 1 if the dealer has blackjack.`}</p>${S.live&&S.dl?timer(S.dl,BJ_INS):''}</div>
-   <div class="btns c2"><button class="btn alt" data-k="n">No thanks</button><button class="btn" data-k="i" ${bjCan(S,mi,'i')?'':'disabled'}>${even?'Even money':'Insure '+fmt(cost)}</button></div>`}
+   <div class="btns c2"><button class="btn alt" data-k="n">No thanks</button><button class="btn" data-k="i" ${bjCan(S,mi,'i')?'':'disabled'}>${even?'Even money':'Insure '+fmt(cost)}</button></div>
+   <button class="link" data-k="hint" style="align-self:center;padding-block:4px;min-height:36px">What's the best move?</button>`}
  if(S.ph==='end'){
   if(S.live)return wait(`Next round in ${cd(S.at)}s`);
   return chips(false)+`<div class="btns c2"><button class="btn alt" data-k="newbet">Change bet</button><button class="btn" data-k="rebet" ${me.lb&&W.bal>=me.lb?'':'disabled'}>Rebet ${fmt(me.lb)}<kbd>Enter</kbd></button></div>`+low}
  if(S.ph==='play'&&S.to===mi){
   if(tb.sent&&tb.sent.startsWith(S.tk))return wait('Sending your move<span class="dots"></span>');
   return `<div class="btns c2"><button class="btn" data-k="h">Hit<kbd>H</kbd></button><button class="btn alt" data-k="s">Stand<kbd>S</kbd></button></div>
-   <div class="btns c3"><button class="btn alt sm" data-k="d" ${bjCan(S,mi,'d')?'':'disabled'}>Double<kbd>D</kbd></button><button class="btn alt sm" data-k="p" ${bjCan(S,mi,'p')?'':'disabled'}>Split<kbd>P</kbd></button><button class="btn alt sm" data-k="u" ${bjCan(S,mi,'u')?'':'disabled'}>Surrender<kbd>U</kbd></button></div>`}
+   <div class="btns c3"><button class="btn alt sm" data-k="d" ${bjCan(S,mi,'d')?'':'disabled'}>Double<kbd>D</kbd></button><button class="btn alt sm" data-k="p" ${bjCan(S,mi,'p')?'':'disabled'}>Split<kbd>P</kbd></button><button class="btn alt sm" data-k="u" ${bjCan(S,mi,'u')?'':'disabled'}>Surrender<kbd>U</kbd></button></div>
+   <button class="link" data-k="hint" style="align-self:center;padding-block:4px;min-height:36px">What's the best move?</button>`}
  if(S.ph==='deal')return wait('Dealing<span class="dots"></span>');
  if(S.ph==='dealer')return wait('Dealer plays<span class="dots"></span>');
  const tp=S.seats[S.to];return wait(me.in?`Waiting for ${tp?esc(tp.n):'the next player'}<span class="dots"></span>`:"You're sitting this round out")}
@@ -940,7 +969,18 @@ function ctl(tb,b){
   case'buyin':case'rebuy':buy(tb,tb.buyAmt);break;
   case'cash':if(me&&!tb.live&&me.s>0){const a=me.s;me.s=0;addBal(a);toast(`Cashed out ${fmt(a)} pearls`);commit(tb)}break;
   case'addbot':send({t:'bot',add:true});break;case'rmbot':send({t:'bot',add:false});break;
-  case'pearls':openShop();break}}
+  case'pearls':openShop();break;
+  case'hint':{const m=S.ph==='ins'?'n':bjHint(S,i);const nm={h:'Hit',s:'Stand',d:'Double',p:'Split',u:'Surrender',n:'Skip insurance'}[m];
+   toast(S.ph==='ins'?'Basic strategy: skip insurance. It loses money in the long run.':`Basic strategy says: ${nm}`);
+   const t=tb.root.querySelector(`.tray [data-k="${m}"]`);if(t){t.classList.add('hinted');setTimeout(()=>t.classList.remove('hinted'),1800)}break}}}
+/* textbook basic strategy for this table: 6 decks, dealer stands on soft 17, double after split, late surrender */
+function bjHint(S,i){const p=S.seats[i],h=p&&p.hs[S.ha];if(!h)return 's';const cs=cards(h.cs,'x'),v=val(cs),up=cv(cards(S.dc,'x')[0]),can=k=>bjCan(S,i,k),dbl=k=>can('d')?'d':k;
+ if(cs.length===2&&cv(cs[0])===cv(cs[1])&&can('p')){const r=cv(cs[0]);const split={11:1,8:1,10:0,9:![7,10,11].includes(up),7:up<=7,6:up<=6,5:0,4:up===5||up===6,3:up<=7,2:up<=7}[r];if(split)return 'p'}
+ if(can('u')&&!v.soft&&(v.t===16&&up>=9||v.t===15&&up===10)&&!(cs.length===2&&cs[0].r===8&&cs[1].r===8))return 'u';
+ if(v.soft&&v.t<21){const t=v.t;if(t>=19)return 's';if(t===18)return up>=3&&up<=6?(can('d')?'d':'s'):up<=8?'s':'h';
+  if(t===17)return up>=3&&up<=6?dbl('h'):'h';if(t>=15)return up>=4&&up<=6?dbl('h'):'h';return up>=5&&up<=6?dbl('h'):'h'}
+ const t=v.t;if(t>=17)return 's';if(t>=13)return up<=6?'s':'h';if(t===12)return up>=4&&up<=6?'s':'h';
+ if(t===11)return up<=10?dbl('h'):'h';if(t===10)return up<=9?dbl('h'):'h';if(t===9)return up>=3&&up<=6?dbl('h'):'h';return 'h'}
 function buy(tb,amt){
  amt=Math.floor(+amt||0);if(amt<=0||amt>W.bal)return;tb.buying=false;
  if(!tb.live){const p=tb.S.seats[0];if(p.s+amt>PK_MAX)return;addBal(-amt);p.s+=amt;SND.chip();commit(tb);return}
@@ -994,7 +1034,18 @@ function onMsg(m){
   case'bought':ledgerOnce(m.id,()=>{addBal(-(+m.amt||0));SND.chip()});break;
   case'cashout':ledgerOnce(m.id,()=>{addBal(+m.amt||0);toast(`Cashed out ${fmt(m.amt)} pearls from table ${String(m.code||'').replace(/[^A-Z]/g,'')}`)});if(T&&T.code===m.code)T.sit=false;break;
   case'left':T=null;LS.set('ddc_table','');liveRender();break;
+  case'react':if(T&&m.code===T.code)showReaction(+m.j,+m.k);break;
   case'err':toast(String(m.m||'Something went wrong.').slice(0,140));if(T)T.sent='';liveRender();break}}
+/* quick reactions at live tables: preset phrases only, shown as a bubble over the player's seat */
+const REACTS=['Nice hand!','Good luck!','Unlucky','Wow!','GG','Thanks!'];
+function showReaction(j,k){if(!T||!T.S||!REACTS[k])return;const R=T.root,mi=myIdx(T);
+ const el=j===mi?(R.querySelector('.pkt .me .hand')||R.querySelector('.phands')):R.querySelector(`.seat[data-j="${j}"]`);if(!el)return;
+ const r=el.getBoundingClientRect();if(r.bottom<0||r.top>innerHeight)return;const b=document.createElement('div');b.className='bubble';b.textContent=REACTS[k];
+ b.style.left=Math.max(60,Math.min(innerWidth-60,r.left+r.width/2))+'px';b.style.top=Math.max(40,r.top+6)+'px';document.body.appendChild(b);setTimeout(()=>b.remove(),2700)}
+function reactBar(){let bar=$('reactBar');if(!T||!T.reactOpen){if(bar)bar.remove();return}
+ if(!bar){$('tbar').insertAdjacentHTML('afterend','<div class="reacts" id="reactBar" role="group" aria-label="Send a reaction"></div>');bar=$('reactBar');
+  bar.innerHTML=REACTS.map((t,k)=>`<button data-r="${k}">${t}</button>`).join('');
+  bar.onclick=e=>{const b=e.target.closest('[data-r]');if(!b)return;send({t:'react',k:+b.dataset.r});T.reactOpen=false;$('tbar').dataset.h='';liveRender()}}}
 function leaveTable(){if(!T)return;send({t:'leave'});T=null;LS.set('ddc_table','');SS.set('ddc_sat','');liveRender()}
 function liveRender(){
  if(curScreen!=='live')return;
@@ -1002,13 +1053,15 @@ function liveRender(){
  if(!T){lobbyRender();return}
  const S=T.S,seated=S&&myIdx(T)>=0,g=S?S.g:T.g;
  const tbar=`<div class="tt">${g==='pk'?"Hold'em":'Blackjack'} · <code>${esc(T.code)}</code><small>${NET.state==='ok'?`${T.people} ${T.people===1?'person':'people'} here`:'Reconnecting…'}</small></div>
-  <button class="sbtn" data-t="copy">Share link</button>${seated?`<button class="sbtn" data-t="stand">${g==='pk'?'Cash out':'Stand up'}</button>`:''}<button class="sbtn" data-t="leave">Leave</button>`;
+  ${seated?`<button class="sbtn" data-t="react" aria-expanded="${!!T.reactOpen}">React</button>`:''}<button class="sbtn" data-t="copy">Share link</button>${seated?`<button class="sbtn" data-t="stand">${g==='pk'?'Cash out':'Stand up'}</button>`:''}<button class="sbtn" data-t="leave">Leave</button>`;
  if($('tbar').dataset.h!==tbar){$('tbar').innerHTML=tbar;$('tbar').dataset.h=tbar}
+ reactBar();
  if(!S){T.mounted=null;$('liveGame').innerHTML=`<div class="panel"><p>Joining table ${esc(T.code)}<span class="dots"></span></p></div>`;return}
  renderTable(T)}
 $('tableWrap').addEventListener('click',e=>{const b=e.target.closest('[data-t]');if(!b||!T)return;const t=b.dataset.t;
  const inHand=()=>{const i=myIdx(T),p=i>=0&&T.S?T.S.seats[i]:null;return p&&p.in&&!p.f&&T.S.ph!=='end'&&T.S.ph!=='idle'&&T.S.ph!=='bet'};
  if((t==='leave'||t==='stand')&&inHand()&&!b.dataset.sure){b.dataset.sure=1;b.textContent='Lose this hand?';setTimeout(()=>{if(b.isConnected){delete b.dataset.sure;$('tbar').dataset.h='';liveRender()}},3500);return}
+ if(t==='react'){T.reactOpen=!T.reactOpen;$('tbar').dataset.h='';liveRender();return}
  if(t==='leave')leaveTable();
  else if(t==='stand'){T.sit=false;T.rd=null;SS.set('ddc_sat','');send({t:'sit',on:false});toast(T.S&&T.S.g==='pk'?'Cashing out after this hand':'You stood up. Sit down again any time.')}
  else if(t==='copy'){const g=T.S&&T.S.g==='pk'?"Texas Hold'em":'Blackjack',url=`${CAN_LIVE?location.origin:LIVE_SITE}/#join-${T.code}`,txt=`Come play ${g} with me at Deepdive Casino (table ${T.code}):`;
@@ -1105,7 +1158,7 @@ function totalWorth(){let w=W.bal;for(const r of myRounds()){if(r.S.g==='pk')w+=
 const midRound=()=>myRounds().some(r=>r.playing&&(r.live?curScreen==='live':curScreen===r.S.g));
 const rescueReady=()=>Date.now()-(W.life||0)>=LIFE_MS;
 let DV=null;
-function openShop(broke){if(DV)return;offerReward();shopRender(broke===true);const d=$('shop');if(!d.open)d.showModal()}
+function openShop(broke){if(DV)return;shopRender(broke===true);const d=$('shop');if(!d.open)d.showModal()}
 $('bal').onclick=()=>openShop();$('walletBtn').onclick=()=>openShop();
 $('shop').addEventListener('close',()=>{if(DV)diveEnd(true)});
 function shopRender(brokeNow){
@@ -1118,12 +1171,10 @@ function shopRender(brokeNow){
   <p>${claimed?`Opened today. Tomorrow's chest holds <b>${fmt(dailyAmt(W.streak+1))}</b>.`:`Open one chest a day. Come back on consecutive days and it grows to 300 on day 7.`}</p>
   <div class="streak" aria-hidden="true">${bar}</div>
   ${claimed?`<div class="wait">Next chest in <b data-hms="${midnight()}">${hms(midnight()-Date.now())}</b></div>`:`<button class="btn" id="claim">Open chest: +${fmt(dailyAmt(curSt+1))}</button>`}</div>
- ${rewardShow&&adsLeft()?`<div class="offer"><h3>Watch an ad<small>${adsLeft()} of ${AD_DAY} left today</small></h3><p>Watch a short ad from our sponsors and get <b>${AD_PEARLS}</b> pearls.</p><button class="btn alt" id="adGo">Watch ad: +${AD_PEARLS}</button></div>`:''}
  <div class="offer"><h3>Pearl Dive<small>${dl} of ${DIVES} left today</small></h3>
   <p>Twenty seconds in the deep. Tap pearls (+2) and gold pearls (+10). A jellyfish stings you for 5.</p>
   ${dl?'<button class="btn alt" id="diveGo">Start a dive</button>':`<div class="wait">More dives in <b data-hms="${midnight()}">${hms(midnight()-Date.now())}</b></div>`}</div>
  <p class="note">Pearls are play money. They can't be bought, sold or cashed out.</p>`;
- const ag=$('adGo');if(ag)ag.onclick=()=>{const f=rewardShow;rewardShow=null;if(f)f()};
  const c=$('claim');if(c)c.onclick=claim;const dg=$('diveGo');if(dg)dg.onclick=()=>diveStart();const dn=$('diveNow');if(dn){dn.onclick=()=>diveStart();if(brokeNow)setTimeout(()=>dn.focus(),50)}}
 function claim(){if(W.day===today())return;W.streak=W.day===yday()?W.streak+1:1;W.day=today();const a=dailyAmt(W.streak);addBal(a);SND.big();toast(`+${fmt(a)} pearls. Day ${W.streak} streak.`);shopRender()}
 function diveStart(){
@@ -1163,27 +1214,14 @@ function diveEnd(closing){const d=DV;if(!d)return;DV=null;cancelAnimationFrame(d
   <div class="btns c2"><button class="btn alt" id="dvBack">Back</button><button class="btn" id="dvAgain" ${divesLeft()?'':'disabled'}>Dive again</button></div>`;
  $('dvBack').onclick=shopRender;$('dvAgain').onclick=diveStart;($('dvAgain').disabled?$('dvBack'):$('dvAgain')).focus()}
 
-/* ---------- ads (only when the server has an AdSense publisher ID set) ---------- */
-const ADS=window.DDC_ADS&&/^ca-pub-\d+$/.test(window.DDC_ADS.client)?window.DDC_ADS:null;
-function placeAd(box){if(!ADS||!ADS.slot||!box||box.dataset.ad)return;box.dataset.ad=1;box.hidden=false;
- box.insertAdjacentHTML('beforeend',`<ins class="adsbygoogle" style="display:block" data-ad-client="${ADS.client}" data-ad-slot="${ADS.slot}" data-ad-format="auto" data-full-width-responsive="true"${ADS.test?' data-adtest="on"':''}></ins>`);
- try{(window.adsbygoogle=window.adsbygoogle||[]).push({})}catch(e){}}
-if(ADS){try{window.adConfig({preloadAdBreaks:'on',sound:'on'})}catch(e){}}
-/* rewarded ad: Google only calls beforeReward when it has an ad ready, so the offer appears only then */
-const AD_PEARLS=100,AD_DAY=5;let rewardShow=null;
-const adsLeft=()=>{const a=W.ad||{};return a.day===today()?Math.max(0,AD_DAY-a.n):AD_DAY};
-function offerReward(){if(!ADS||typeof window.adBreak!=='function'||!adsLeft()||rewardShow)return;
- try{window.adBreak({type:'reward',name:'pearls',
-  beforeAd(){SND.pause()},afterAd(){SND.resume();rewardShow=null;if($('shop').open&&!DV)shopRender()},
-  beforeReward(show){rewardShow=show;if($('shop').open&&!DV)shopRender()},
-  adDismissed(){toast('Watch the whole ad to get the pearls.')},
-  adViewed(){const a=W.ad&&W.ad.day===today()?W.ad:{day:today(),n:0};W.ad={day:a.day,n:a.n+1};addBal(AD_PEARLS);SND.win();toast(`+${AD_PEARLS} pearls. Thanks for watching!`)}})}catch(e){}}
-
 /* ---------- settings ---------- */
 function setRender(){$('sndSw').setAttribute('aria-checked',SND.on);$('musSw').setAttribute('aria-checked',SND.mus);$('musSw').disabled=!SND.on;$('musV').value=Math.round(SND.vol*100);$('musV').disabled=!SND.on||!SND.mus;document.querySelectorAll('[data-fx]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.fx===FX));
  $('fxNote').textContent=FX==='auto'?`Auto picked ${AUTO_LITE?'Lite':'Full'} for this device.`:FX==='lite'?'Lite turns off glows, bubbles and floating animation. Best for older phones.':'Full turns on every glow and animation.'}
 function openSettings(){setRender();$('settings').showModal()}
 $('setBtn').onclick=openSettings;$('setBtn2').onclick=openSettings;
+$('statsBtn').onclick=()=>{statsRender();$('stats').showModal()};
+$('statsReset').onclick=e=>{const b=e.currentTarget;if(!b.dataset.sure){b.dataset.sure=1;b.textContent='Tap again to reset your stats';setTimeout(()=>{delete b.dataset.sure;b.textContent='Reset stats'},3500);return}
+ ST.bj={h:0,w:0,l:0,p:0,bj:0,best:0};ST.pk={h:0,w:0,best:0,bh:'',bs:0};ST.peak=W.bal;LS.set('ddc_stats',ST);delete b.dataset.sure;b.textContent='Reset stats';statsRender();toast('Stats reset')};
 $('sndSw').onclick=()=>{SND.set(!SND.on);setRender();SND.tap()};
 $('musSw').onclick=()=>{SND.setMus(!SND.mus);setRender()};
 $('musV').oninput=e=>SND.setVol(+e.target.value/100);
@@ -1202,8 +1240,7 @@ function showScreen(s){
  document.title=s==='menu'?'Deepdive Casino':(s==='pk'?"Texas Hold'em":TITLE[s])+' · Deepdive Casino';
  if(s==='bj'||s==='pk'){const tb=SOLO[s];renderTable(tb);drive(tb)}
  if(s==='live'){$('lobby').dataset.m&&lobbyRender();liveRender();if(!T)lobbyRender()}
- if(s==='menu'){menuLive();placeAd($('adMenu'))}
- if(s==='live'&&!T){const lb=$('lobby');if(lb.dataset.m&&!$('adLobby')){lb.insertAdjacentHTML('beforeend','<div class="adbox" id="adLobby" hidden style="margin-top:14px"></div>')}placeAd($('adLobby'))}
+ if(s==='menu')menuLive();
  scrollTo(0,0);if(prev&&s!=='menu')$('ttl').focus({preventScroll:true})}
 function routeFromHash(){const h=location.hash.slice(1),m=/^join-([A-Za-z]{4})$/.exec(h);
  if(m){linkCode=m[1].toUpperCase();history.replaceState(null,'',location.pathname+location.search+'#live');if($('splash').hidden){const c=linkCode;linkCode='';joinFromLink(c)}return 'live'}
