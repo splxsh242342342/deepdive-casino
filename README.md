@@ -27,6 +27,8 @@ Open http://localhost:3000. Open a second browser tab to try a live table with y
 
 It needs a host that keeps a Node process running (WebSockets). Static hosts like Netlify or GitHub Pages won't work for live tables.
 
+**Live:** https://casino.ardanstudio.ie
+
 **Render:** New > Web Service > pick this repo. Build command `npm install`, start command `npm start`. Add the environment variable `NODE_ENV=production`. Render's free plan sleeps when idle; the first visit after a quiet spell takes about 30 seconds.
 
 Live tables live in the server's memory. On a redeploy or restart the server cashes out every seated Hold'em player before it stops, but tables themselves start fresh.
